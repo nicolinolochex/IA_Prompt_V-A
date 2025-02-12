@@ -9,8 +9,8 @@ from IPython.display import display, clear_output
 from dotenv import load_dotenv
 import os
 
-# Configure your OpenAI API key (replace with your actual key)
-openai.api_key = "YOUR_OPENAI_API_KEY"
+load_dotenv()  # Carga las variables del archivo .env
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # ---------------------- Funciones de Scraping y Extracción ----------------------
 
