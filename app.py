@@ -6,6 +6,8 @@ import pandas as pd
 import csv
 import ipywidgets as widgets
 from IPython.display import display, clear_output
+from dotenv import load_dotenv
+import os
 
 # Configure your OpenAI API key (replace with your actual key)
 openai.api_key = "YOUR_OPENAI_API_KEY"
