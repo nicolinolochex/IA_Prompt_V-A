@@ -4,7 +4,6 @@ from bs4 import BeautifulSoup
 import json
 import pandas as pd
 import csv
-import ipywidgets as widgets
 from IPython.display import display, clear_output
 from dotenv import load_dotenv
 import os
