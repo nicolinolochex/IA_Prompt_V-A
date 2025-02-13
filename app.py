@@ -1,3 +1,9 @@
+import subprocess
+
+# Verifica las librerías instaladas en Streamlit Cloud
+installed_packages = subprocess.run(["pip", "freeze"], capture_output=True, text=True)
+print(installed_packages.stdout)  # Muestra las librerías en los logs
+
 import streamlit as st
 import openai
 import requests
