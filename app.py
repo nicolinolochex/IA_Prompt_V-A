@@ -1,11 +1,12 @@
 import subprocess
 
-# Instalar openai si no está presente
+# Instala openai si no está instalado
 try:
     import openai
 except ModuleNotFoundError:
-    subprocess.run(["pip", "install", "openai"])
+    subprocess.run(["pip", "install", "openai==0.28.0"])
     import openai  # Reintenta la importación
+
 
 import streamlit as st
 import openai
