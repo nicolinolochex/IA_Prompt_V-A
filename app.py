@@ -1,8 +1,11 @@
 import subprocess
 
-# Verifica las librerías instaladas en Streamlit Cloud
-installed_packages = subprocess.run(["pip", "freeze"], capture_output=True, text=True)
-print(installed_packages.stdout)  # Muestra las librerías en los logs
+# Instalar openai si no está presente
+try:
+    import openai
+except ModuleNotFoundError:
+    subprocess.run(["pip", "install", "openai"])
+    import openai  # Reintenta la importación
 
 import streamlit as st
 import openai
