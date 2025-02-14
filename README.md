@@ -1,123 +1,102 @@
-# Evaluador Automatizado de Empresas Según Requerimientos (E3)
+# 📌 Evaluador Automatizado de Empresas (E3)
 
-## 🌍 Accede a la Aplicación Web 📌
+## 🚀 Accede a la Aplicación Web
 
-La aplicación ya está desplegada y lista para su uso en:
-
-🔗 **[Company Research Tool](https://iapromptv-a-2eqe8j67tnkvat972ihnmy.streamlit.app/)**
+🔗 **[Evaluador de Empresas - E3](https://iapromptv-a-2eqe8j67tnkvat972ihnmy.streamlit.app/)**
 
 ---
 
-## 📌 Resumen del Proyecto
+## 📖 Introducción
 
-Este sistema automatiza la investigación de empresas a partir de información disponible en la web, con el objetivo de facilitar el trabajo del equipo de **Adquisiciones**. Basado en parámetros definidos como:
+### 📌 Nombre del Proyecto
+**Evaluador Automatizado de Empresas Según Requerimientos (E3)**
 
-- **Headcount** (Número de empleados)
-- **Servicios ofrecidos**
-- **Revenue** (Ingresos anuales)
-- **Ubicación del Headquarter**
-- **Descripcion de la empresa**
+### 🔍 Presentación del Problema
+En el sector de **Adquisiciones**, el proceso de evaluación de empresas es manual y consume mucho tiempo. Se requiere una herramienta que automatice la recopilación de información clave, como el **headcount**, los **servicios ofrecidos**, el **revenue** y el **país de origen**, facilitando la toma de decisiones.
 
+### 🤖 Desarrollo de la Propuesta
+La solución utiliza **IA y Web Scraping** para extraer información relevante de sitios web y perfiles de LinkedIn. Mediante **GPT-4**, se procesan los datos y se presentan de forma estructurada.
+
+### ✅ Justificación de la Viabilidad
+- **Recursos disponibles:** Se cuenta con herramientas como **Streamlit, Python, BeautifulSoup y OpenAI API**.
+- **Tiempo estimado:** Proyecto ya implementado y funcional.
+- **Impacto:** Reducción del tiempo de evaluación y mayor precisión en la información obtenida.
 
 ---
 
-## 🚀 Funcionalidades Clave
+## 🎯 Objetivos
 
-### ✅ 1. Extracción de Información desde Sitios Web y Perfiles de LinkedIn
+- Automatizar la recopilación de datos de empresas.
+- Presentar la información de manera estructurada.
+- Facilitar la toma de decisiones en el equipo de adquisiciones.
 
-- **Objetivo:** Recopilar y procesar información clave de empresas desde sus sitios web y/o perfiles de LinkedIn.
-- **Implementación:**
-  - Uso de **web scraping** con `BeautifulSoup` para obtener contenido relevante.
-  - Procesamiento con **GPT-4** para extraer y estructurar la información.
-  - Generación de un resumen claro y conciso con datos clave.
+---
 
-🔹 **Ejemplo de Prompt:**
+## 🛠️ Metodología
 
-> "Dado el contenido web extraído, genera un JSON con los siguientes datos: nombre, website, tipo de empresa (pública, privada, adquirida, etc.), país, breve descripción, servicios, headcount y revenue."
+1. **Definir los criterios de evaluación** (headcount, servicios, revenue, etc.).
+2. **Extraer información** mediante scraping de sitios web y LinkedIn.
+3. **Procesar y estructurar la información** con GPT-4.
+4. **Mostrar resultados** en una interfaz interactiva con Streamlit.
 
+---
 
+## 🔧 Herramientas y Tecnologías
 
-### ✅ 2. Generación de Reportes y Exportación de Datos
-
-- **Objetivo:** Facilitar la visualización y descarga de la información extraída.
-- **Implementación:**
-  - Presentación en formato de tabla dentro de la app.
-  - **Exportación a CSV** para análisis externo.
-  - **Botón de descarga** para obtener los datos estructurados.
-
-🔹 **Ejemplo:**
-
-> Generación de un archivo `companies_info.csv` con la información procesada.
+- **Python**: Desarrollo del backend.
+- **Streamlit**: Interfaz web.
+- **BeautifulSoup**: Web Scraping.
+- **OpenAI GPT-4**: Procesamiento de datos.
+- **Pandas**: Manejo de datos estructurados.
 
 ---
 
 ## 🏗️ Arquitectura de la Aplicación
 
-La aplicación está desarrollada utilizando:
-
-- **Streamlit**: Para la interfaz web.
-- **Python**: Para la lógica del backend.
-- **BeautifulSoup**: Para el scraping de datos.
-- **OpenAI API (GPT-4)**: Para la extracción y análisis de datos.
-- **Pandas**: Para estructurar los datos y generar reportes en CSV.
-- **Dotenv**: Para la gestión segura de la API Key de OpenAI.
-
-### 📂 Estructura del Proyecto
-
-```
-📂 Proyecto E3
-│── .env              # Archivo con API Key (no se sube al repo)
-│── .gitignore        # Ignora archivos sensibles
-│── app.py            # Código principal de la app
-│── README.md         # Documentación del proyecto
-│── requeriments.txt  # Dependencias del proyecto
-└─── .devcontainer    # Configuración para entornos de desarrollo
-```
+1. **Entrada**: URLs de empresas.
+2. **Extracción de datos**: Scraping con BeautifulSoup.
+3. **Procesamiento**: GPT-4 analiza los datos y los presenta en JSON.
+4. **Visualización**: Streamlit muestra la información en una tabla interactiva.
+5. **Exportación**: Generación de archivos CSV descargables.
 
 ---
 
-## 🛠️ Instalación y Configuración
+## 📌 Instalación y Configuración
 
-Para ejecutar el proyecto en local:
-
-1. **Clonar el repositorio:**
-
+1. **Clona el repositorio**:
    ```bash
-   git clone https://github.com/tu-repositorio/aqui.git
-   cd proyecto-e3
+   git clone https://github.com/nicolinolochex/IA_Prompt_V-A.git
    ```
-
-2. **Instalar dependencias:**
-
+2. **Accede al directorio del proyecto**:
    ```bash
-   pip install -r requeriments.txt
+   cd IA_Prompt_V-A
    ```
-
-3. **Configurar la API Key de OpenAI:**
-
-   - Crear un archivo `.env` con el siguiente contenido:
-     ```plaintext
+3. **Instala las dependencias**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. **Configura la API Key de OpenAI**:
+   - Crea un archivo `.env` y agrega tu clave:
+     ```env
      OPENAI_API_KEY=tu_api_key_aqui
      ```
-
-4. **Ejecutar la aplicación:**
-
+5. **Ejecuta la aplicación**:
    ```bash
    streamlit run app.py
    ```
 
 ---
 
-## 🌟 Próximos Pasos
+## 🚀 Próximos Pasos
 
-✔️ **Mejorar la extracción de datos** para reducir errores en LinkedIn.
-✔️ **Crear un monitor de usuarios
-✔️ **Agregar más criterios de selección** según necesidades del equipo.
-✔️ **Implementar una base de datos** para almacenar búsquedas pasadas.
-✔️ **Implementar una base de datos** para almacenar búsquedas pasadas.
-✔️ **Mejorar el input de webs
-✔️ **Mejorar la seguridad en general
+- Integrar más fuentes de datos.
+- Optimizar el scraping y mejorar la precisión de la IA.
+- Agregar métricas y visualizaciones avanzadas.
 
+---
 
+## 📩 Contáctame
 
+📧 **Correo:** arandigacatriel@gmail.com
+🔗 **LinkedIn:** [Catriel Nicolás Arandiga](https://www.linkedin.com/in/catriel-nicolas-arandiga)
 
