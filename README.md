@@ -16,9 +16,8 @@ Este sistema automatiza la investigación de empresas a partir de información d
 - **Servicios ofrecidos**
 - **Revenue** (Ingresos anuales)
 - **Ubicación del Headquarter**
-- **Sostenibilidad**
+- **Descripcion de la empresa**
 
-La aplicación permite extraer información relevante, generar un resumen evaluativo y asignar un puntaje para determinar qué empresas cumplen mejor con los requisitos del equipo.
 
 ---
 
@@ -36,18 +35,9 @@ La aplicación permite extraer información relevante, generar un resumen evalua
 
 > "Dado el contenido web extraído, genera un JSON con los siguientes datos: nombre, website, tipo de empresa (pública, privada, adquirida, etc.), país, breve descripción, servicios, headcount y revenue."
 
-### ✅ 2. Evaluación y Asignación de Puntaje
 
-- **Objetivo:** Clasificar a las empresas según qué tan bien cumplen los criterios de adquisición.
-- **Implementación:**
-  - Uso de una fórmula de **scoring** basada en los parámetros ingresados.
-  - Generación de un ranking automático de las empresas más adecuadas.
 
-🔹 **Ejemplo de Prompt:**
-
-> "Dada la siguiente información sobre la empresa y los criterios de evaluación, asigna un puntaje del 1 al 10 y justifica la puntuación."
-
-### ✅ 3. Generación de Reportes y Exportación de Datos
+### ✅ 2. Generación de Reportes y Exportación de Datos
 
 - **Objetivo:** Facilitar la visualización y descarga de la información extraída.
 - **Implementación:**
@@ -79,7 +69,6 @@ La aplicación está desarrollada utilizando:
 │── .env              # Archivo con API Key (no se sube al repo)
 │── .gitignore        # Ignora archivos sensibles
 │── app.py            # Código principal de la app
-│── companies_info.csv # Archivo de salida con los datos procesados
 │── README.md         # Documentación del proyecto
 │── requeriments.txt  # Dependencias del proyecto
 └─── .devcontainer    # Configuración para entornos de desarrollo
@@ -122,15 +111,13 @@ Para ejecutar el proyecto en local:
 ## 🌟 Próximos Pasos
 
 ✔️ **Mejorar la extracción de datos** para reducir errores en LinkedIn.
-✔️ **Optimizar el proceso de scoring** para ajustar mejor las evaluaciones.
+✔️ **Crear un monitor de usuarios
 ✔️ **Agregar más criterios de selección** según necesidades del equipo.
 ✔️ **Implementar una base de datos** para almacenar búsquedas pasadas.
+✔️ **Implementar una base de datos** para almacenar búsquedas pasadas.
+✔️ **Mejorar el input de webs
+✔️ **Mejorar la seguridad en general
 
----
 
-## 📩 Contacto
 
-Si tienes preguntas o sugerencias, ¡contáctame! 🚀
-
-✅ 2. Evaluación y Asignación de Puntaje sacame esto
 
