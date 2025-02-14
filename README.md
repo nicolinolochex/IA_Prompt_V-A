@@ -1,102 +1,123 @@
 # 📌 Evaluador Automatizado de Empresas (E3)
 
+![Streamlit](https://img.shields.io/badge/Streamlit-App-red?style=flat&logo=streamlit)
+![Python](https://img.shields.io/badge/Python-3.9-blue?style=flat&logo=python)
+
 ## 🚀 Accede a la Aplicación Web
 
-🔗 **[Evaluador de Empresas - E3](https://iapromptv-a-2eqe8j67tnkvat972ihnmy.streamlit.app/)**
+🔗 [E3 - Evaluador Automatizado de Empresas](https://iapromptv-a-2eqe8j67tnkvat972ihnmy.streamlit.app/)
 
 ---
 
 ## 📖 Introducción
 
-### 📌 Nombre del Proyecto
-**Evaluador Automatizado de Empresas Según Requerimientos (E3)**
+### 🎯 Nombre del Proyecto
+**Evaluador Automatizado de Empresas (E3)**
 
-### 🔍 Presentación del Problema
-En el sector de **Adquisiciones**, el proceso de evaluación de empresas es manual y consume mucho tiempo. Se requiere una herramienta que automatice la recopilación de información clave, como el **headcount**, los **servicios ofrecidos**, el **revenue** y el **país de origen**, facilitando la toma de decisiones.
+### 🧐 Problema a Abordar
+El equipo de adquisiciones necesita investigar empresas potenciales para evaluar oportunidades de compra basadas en criterios como *headcount*, *revenue*, *país*, *servicios ofrecidos* y *sostenibilidad*. 
 
-### 🤖 Desarrollo de la Propuesta
-La solución utiliza **IA y Web Scraping** para extraer información relevante de sitios web y perfiles de LinkedIn. Mediante **GPT-4**, se procesan los datos y se presentan de forma estructurada.
+Actualmente, este proceso es manual y consume mucho tiempo, además de que la información puede ser inconsistente o difícil de comparar. La falta de una herramienta automatizada para extraer y estandarizar estos datos genera ineficiencias en la toma de decisiones.
 
-### ✅ Justificación de la Viabilidad
-- **Recursos disponibles:** Se cuenta con herramientas como **Streamlit, Python, BeautifulSoup y OpenAI API**.
-- **Tiempo estimado:** Proyecto ya implementado y funcional.
-- **Impacto:** Reducción del tiempo de evaluación y mayor precisión en la información obtenida.
+### 💡 Desarrollo de la Propuesta de Solución
+La solución planteada consiste en una aplicación basada en **IA generativa** y **web scraping** que extrae, organiza y presenta la información clave de las empresas desde sus sitios web y perfiles de LinkedIn.
+
+A través de **prompts optimizados en GPT-4**, la aplicación transforma el contenido extraído en información estructurada y relevante para el equipo de adquisiciones, reduciendo el tiempo de búsqueda y mejorando la exactitud de los datos.
 
 ---
 
 ## 🎯 Objetivos
 
-- Automatizar la recopilación de datos de empresas.
-- Presentar la información de manera estructurada.
-- Facilitar la toma de decisiones en el equipo de adquisiciones.
+✅ Automatizar la recopilación de información clave de empresas a partir de fuentes en línea.  
+✅ Generar resúmenes estructurados sobre cada empresa en base a criterios predefinidos.  
+✅ Facilitar la toma de decisiones del equipo de adquisiciones al proporcionar datos comparables.  
+✅ Implementar una aplicación web accesible que permita a los usuarios ingresar URLs de empresas y recibir reportes inmediatos.
 
 ---
 
-## 🛠️ Metodología
+## 🔧 Metodología
 
-1. **Definir los criterios de evaluación** (headcount, servicios, revenue, etc.).
-2. **Extraer información** mediante scraping de sitios web y LinkedIn.
-3. **Procesar y estructurar la información** con GPT-4.
-4. **Mostrar resultados** en una interfaz interactiva con Streamlit.
+1. **Extracción de datos**: Se utiliza *web scraping* para obtener información desde los sitios web y LinkedIn de las empresas.
+2. **Procesamiento con GPT-4**: Se envía el contenido extraído a **GPT-4** para extraer y estructurar la información relevante.
+3. **Visualización y exportación**: Los datos se presentan en la interfaz de la aplicación con opción de descarga en CSV.
 
 ---
 
-## 🔧 Herramientas y Tecnologías
+## 🛠️ Herramientas y Tecnologías
 
-- **Python**: Desarrollo del backend.
-- **Streamlit**: Interfaz web.
-- **BeautifulSoup**: Web Scraping.
-- **OpenAI GPT-4**: Procesamiento de datos.
-- **Pandas**: Manejo de datos estructurados.
+✅ **Lenguaje de programación**: Python.  
+✅ **Framework Web**: Streamlit.  
+✅ **Librerías**: `requests`, `BeautifulSoup`, `pandas`, `openai`, `python-dotenv`.  
+✅ **IA Generativa**: GPT-4.  
+✅ **Hosting**: Streamlit Cloud.  
 
 ---
 
 ## 🏗️ Arquitectura de la Aplicación
 
-1. **Entrada**: URLs de empresas.
-2. **Extracción de datos**: Scraping con BeautifulSoup.
-3. **Procesamiento**: GPT-4 analiza los datos y los presenta en JSON.
-4. **Visualización**: Streamlit muestra la información en una tabla interactiva.
-5. **Exportación**: Generación de archivos CSV descargables.
+📌 **Interfaz Web**: Los usuarios ingresan URLs de empresas en la app.  
+📌 **Scraper**: Extrae contenido de los sitios web y perfiles de LinkedIn.  
+📌 **Procesador IA**: Utiliza **GPT-4** para analizar y estructurar la información extraída.  
+📌 **Visualización de Datos**: Presenta los datos de forma tabular en la interfaz y permite la exportación en CSV.
 
 ---
 
-## 📌 Instalación y Configuración
-
-1. **Clona el repositorio**:
-   ```bash
-   git clone https://github.com/nicolinolochex/IA_Prompt_V-A.git
-   ```
-2. **Accede al directorio del proyecto**:
-   ```bash
-   cd IA_Prompt_V-A
-   ```
-3. **Instala las dependencias**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. **Configura la API Key de OpenAI**:
-   - Crea un archivo `.env` y agrega tu clave:
-     ```env
-     OPENAI_API_KEY=tu_api_key_aqui
-     ```
-5. **Ejecuta la aplicación**:
-   ```bash
-   streamlit run app.py
-   ```
+## 📁 Estructura del Proyecto
+```
+📂 ia_prompt_v-a
+│── .env                 # Variables de entorno (clave API de OpenAI)
+│── .gitignore           # Archivos y carpetas ignorados por Git
+│── app.py               # Código principal de la aplicación Streamlit
+│── requirements.txt     # Dependencias necesarias para ejecutar la app
+│── companies_info.csv   # Archivo CSV generado con los datos extraídos
+│── README.md            # Documentación del proyecto
+│
+└─── .devcontainer
+    └── devcontainer.json  # Configuración del entorno de desarrollo
+```
 
 ---
 
-## 🚀 Próximos Pasos
+## 🔧 Instalación y Configuración
 
-- Integrar más fuentes de datos.
-- Optimizar el scraping y mejorar la precisión de la IA.
-- Agregar métricas y visualizaciones avanzadas.
+Para ejecutar la aplicación localmente, sigue estos pasos:
+
+### 1️⃣ Clonar el repositorio
+```bash
+git clone https://github.com/nicolinolochex/IA_Prompt_V-A.git
+cd IA_Prompt_V-A
+```
+
+### 2️⃣ Crear un entorno virtual e instalar dependencias
+```bash
+python -m venv venv
+source venv/bin/activate  # En Mac/Linux
+venv\Scripts\activate    # En Windows
+pip install -r requirements.txt
+```
+
+### 3️⃣ Configurar la clave de OpenAI
+Crea un archivo `.env` en la raíz del proyecto y agrega:
+```
+OPENAI_API_KEY=tu_clave_de_openai
+```
+
+### 4️⃣ Ejecutar la aplicación
+```bash
+streamlit run app.py
+```
+
+---
+
+## 📌 Próximos Pasos
+
+🚀 **Optimizar la extracción de datos**: Mejorar la precisión de los scrapers para sitios web complejos.  
+🚀 **Agregar más fuentes de datos**: Integrar APIs de información empresarial para mejorar la cobertura de datos.  
+🚀 **Implementar autenticación de usuarios**: Control de acceso para distintos perfiles de usuario.  
 
 ---
 
 ## 📩 Contáctame
-
-📧 **Correo:** arandigacatriel@gmail.com
+📧 **Email:** arandigacatriel@gmail.com
 🔗 **LinkedIn:** [Catriel Nicolás Arandiga](https://www.linkedin.com/in/catriel-nicolas-arandiga)
 
