@@ -1,107 +1,136 @@
-# Proyecto Propuesto: Evaluador Automatizado de Empresas Según Requerimientos (E3)
+# Evaluador Automatizado de Empresas Según Requerimientos (E3)
+
+## 🌍 Accede a la Aplicación Web 📌
+
+La aplicación ya está desplegada y lista para su uso en:
+
+🔗 **[Company Research Tool](https://iapromptv-a-2eqe8j67tnkvat972ihnmy.streamlit.app/)**
 
 ---
 
-## Hola Profe,
+## 📌 Resumen del Proyecto
 
-Le presento mi idea y doy un poco de contexto. Trabajo en un equipo de **Adquisiciones** en la rama de **BI**, y basándome en las necesidades operativas del equipo —que se encarga de investigar empresas potenciales para adquirir, de acuerdo a ciertos criterios definidos por el management (como *revenue*, *país*, *headcount*, etc.)—, creo que podamos desarrollar algunos prompts que los ayuden en sus tareas diarias para mejorar los tiempos en la devolución de solicitudes y la exactitud de los datos que manejamos.
+Este sistema automatiza la investigación de empresas a partir de información disponible en la web, con el objetivo de facilitar el trabajo del equipo de **Adquisiciones**. Basado en parámetros definidos como:
 
-A continuación, resumo mi propuesta en tres puntos principales.
+- **Headcount** (Número de empleados)
+- **Servicios ofrecidos**
+- **Revenue** (Ingresos anuales)
+- **Ubicación del Headquarter**
+- **Sostenibilidad**
 
----
-
-## Resumen de la Idea
-
-El sistema automatizará la investigación de empresas a partir de información disponible en la web (por ejemplo, en sus sitios corporativos o perfiles de LinkedIn). A partir de parámetros definidos (como **headcount**, **servicios ofrecidos**, **revenue**, **país del headquarter** y si la empresa es **sustentable** o no), el sistema:
-
-- Extraerá la información relevante.
-- Generará un resumen evaluativo.
-- Asignará un puntaje a cada empresa para determinar cuáles cumplen mejor con los requisitos del equipo.
+La aplicación permite extraer información relevante, generar un resumen evaluativo y asignar un puntaje para determinar qué empresas cumplen mejor con los requisitos del equipo.
 
 ---
 
-## Funcionalidades Clave
+## 🚀 Funcionalidades Clave
 
-### 1. Listado de Empresas Basado en Requerimientos Predefinidos
+### ✅ 1. Extracción de Información desde Sitios Web y Perfiles de LinkedIn
 
-- **Objetivo:**  
-  Dado un conjunto de criterios (ej.: *headcount*, *servicios*, *revenue*, *ubicación* y *sostenibilidad*), el sistema proporcionará un listado de empresas que cumplan en mayor medida esos requerimientos.
+- **Objetivo:** Recopilar y procesar información clave de empresas desde sus sitios web y/o perfiles de LinkedIn.
+- **Implementación:**
+  - Uso de **web scraping** con `BeautifulSoup` para obtener contenido relevante.
+  - Procesamiento con **GPT-4** para extraer y estructurar la información.
+  - Generación de un resumen claro y conciso con datos clave.
 
-- **Implementación:**  
-  - Utilizar un **prompt predefinido** en GPT-4 para solicitar un listado basado en los criterios.
-  - Integrar información extraída de sitios corporativos y perfiles de LinkedIn, ya sea mediante **web scraping** o **APIs** disponibles.
+🔹 **Ejemplo de Prompt:**
 
----
+> "Dado el contenido web extraído, genera un JSON con los siguientes datos: nombre, website, tipo de empresa (pública, privada, adquirida, etc.), país, breve descripción, servicios, headcount y revenue."
 
-### 2. Extracción de Información Relevante de Páginas Web y Perfiles en LinkedIn
+### ✅ 2. Evaluación y Asignación de Puntaje
 
-- **Objetivo:**  
-  Recopilar y procesar información clave de las empresas desde sus sitios web y/o perfiles de LinkedIn, extrayendo datos como:
-  - Número de empleados.
-  - Servicios ofrecidos.
-  - Revenue.
-  - País de la sede.
-  - Iniciativas de sustentabilidad.
+- **Objetivo:** Clasificar a las empresas según qué tan bien cumplen los criterios de adquisición.
+- **Implementación:**
+  - Uso de una fórmula de **scoring** basada en los parámetros ingresados.
+  - Generación de un ranking automático de las empresas más adecuadas.
 
-- **Implementación:**  
-  - **Scraping:**  
-    Desarrollar scripts en Python (usando librerías como *BeautifulSoup* o *Selenium*) para obtener el contenido de las páginas y perfiles.
-  - **Procesamiento con GPT-4:**  
-    Crear un prompt que, al recibir el contenido textual extraído, genere un extracto **estructurado** y **conciso** de los datos relevantes.
+🔹 **Ejemplo de Prompt:**
 
-  - **Ejemplo de Prompt:**  
-    > "A partir del siguiente contenido web, extrae y resume la siguiente información: número de empleados, servicios ofrecidos, revenue, país del headquarter y si la empresa se posiciona como sustentable. Presenta la información de forma estructurada."
+> "Dada la siguiente información sobre la empresa y los criterios de evaluación, asigna un puntaje del 1 al 10 y justifica la puntuación."
 
----
+### ✅ 3. Generación de Reportes y Exportación de Datos
 
-### 3. Asignación de Puntaje y Selección de las Mejores Opciones
+- **Objetivo:** Facilitar la visualización y descarga de la información extraída.
+- **Implementación:**
+  - Presentación en formato de tabla dentro de la app.
+  - **Exportación a CSV** para análisis externo.
+  - **Botón de descarga** para obtener los datos estructurados.
 
-- **Objetivo:**  
-  Evaluar cada empresa en función de qué tan bien cumplen con los requerimientos establecidos y asignarles un **puntaje** que permita ordenarlas de acuerdo a su encaje con dichos criterios.
+🔹 **Ejemplo:**
 
-- **Implementación:**  
-  - Definir una **fórmula de scoring** en la que cada criterio tenga un peso específico (por ejemplo, *revenue* y *sostenibilidad* pueden tener mayor peso).
-  - Generar un prompt para GPT-4 que, a partir de la información extraída, asigne un puntaje y ofrezca una breve justificación.
-
-  - **Ejemplo de Prompt:**  
-    > "Dada la siguiente información sobre la empresa [extracto estructurado] y considerando los siguientes pesos para cada criterio (*headcount*, *servicios*, *revenue*, *país*, *sustentabilidad*), asigna un puntaje del 1 al 10 y explica brevemente por qué se asignó ese puntaje."
+> Generación de un archivo `companies_info.csv` con la información procesada.
 
 ---
 
-## Flujo de Datos y Consideraciones Técnicas
+## 🏗️ Arquitectura de la Aplicación
 
-1. **Entrada de Requerimientos y URLs:**  
-   - El usuario define los criterios deseados.  
-   - Se provee una lista de URLs o perfiles de LinkedIn a analizar.
+La aplicación está desarrollada utilizando:
 
-2. **Extracción y Preprocesamiento:**  
-   - Se utiliza **web scraping** para obtener el contenido textual de las páginas y perfiles.  
-   - El contenido es procesado para eliminar ruido y obtener la información relevante.
+- **Streamlit**: Para la interfaz web.
+- **Python**: Para la lógica del backend.
+- **BeautifulSoup**: Para el scraping de datos.
+- **OpenAI API (GPT-4)**: Para la extracción y análisis de datos.
+- **Pandas**: Para estructurar los datos y generar reportes en CSV.
+- **Dotenv**: Para la gestión segura de la API Key de OpenAI.
 
-3. **Procesamiento con GPT-4:**  
-   - Se emplean **prompts predefinidos** para extraer la información estructurada de cada fuente.  
-   - Se genera un resumen evaluativo de cada empresa basándose en los criterios.
+### 📂 Estructura del Proyecto
 
-4. **Evaluación y Puntaje:**  
-   - Se asigna un puntaje a cada empresa mediante una función o prompt que integre los datos y criterios definidos.  
-   - Se presenta un **ranking** de empresas que mejor se ajusten a los requerimientos.
-
-5. **Visualización y Reporte:**  
-   - Se pueden generar reportes visuales, dashboards o incluso infografías (posiblemente utilizando **DALL-E** para representar gráficamente el nivel de encaje).
-
----
-
-## Viabilidad Técnica y Justificación
-
-- **Recursos Disponibles:**  
-  Mi experiencia en análisis de datos y el acceso a herramientas de scraping, junto con las APIs de OpenAI, hacen factible la implementación de este sistema.
-
-- **Tiempo y Limitaciones:**  
-  Será necesario coordinar la integración de múltiples fuentes de datos, el procesamiento con GPT-4 y la asignación de puntajes, considerando la cuota y el costo de las APIs.
-
-- **Valor Agregado:**  
-  Automatizar la evaluación y clasificación de empresas basándose en criterios predefinidos mejora la eficiencia en el proceso de investigación, permitiendo que el equipo se concentre en análisis estratégicos y optimizando la toma de decisiones.
+```
+📂 Proyecto E3
+│── .env              # Archivo con API Key (no se sube al repo)
+│── .gitignore        # Ignora archivos sensibles
+│── app.py            # Código principal de la app
+│── companies_info.csv # Archivo de salida con los datos procesados
+│── README.md         # Documentación del proyecto
+│── requeriments.txt  # Dependencias del proyecto
+└─── .devcontainer    # Configuración para entornos de desarrollo
+```
 
 ---
 
-Esta propuesta se alinea con las necesidades del equipo y mi rol dentro de la organización, ofreciendo una solución innovadora para agilizar el proceso de research y evaluación de empresas. Quedo atento a sus comentarios o sugerencias para seguir mejorando la propuesta.
+## 🛠️ Instalación y Configuración
+
+Para ejecutar el proyecto en local:
+
+1. **Clonar el repositorio:**
+
+   ```bash
+   git clone https://github.com/tu-repositorio/aqui.git
+   cd proyecto-e3
+   ```
+
+2. **Instalar dependencias:**
+
+   ```bash
+   pip install -r requeriments.txt
+   ```
+
+3. **Configurar la API Key de OpenAI:**
+
+   - Crear un archivo `.env` con el siguiente contenido:
+     ```plaintext
+     OPENAI_API_KEY=tu_api_key_aqui
+     ```
+
+4. **Ejecutar la aplicación:**
+
+   ```bash
+   streamlit run app.py
+   ```
+
+---
+
+## 🌟 Próximos Pasos
+
+✔️ **Mejorar la extracción de datos** para reducir errores en LinkedIn.
+✔️ **Optimizar el proceso de scoring** para ajustar mejor las evaluaciones.
+✔️ **Agregar más criterios de selección** según necesidades del equipo.
+✔️ **Implementar una base de datos** para almacenar búsquedas pasadas.
+
+---
+
+## 📩 Contacto
+
+Si tienes preguntas o sugerencias, ¡contáctame! 🚀
+
+✅ 2. Evaluación y Asignación de Puntaje sacame esto
+
