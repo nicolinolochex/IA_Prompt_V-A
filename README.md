@@ -1,108 +1,105 @@
-# 📌 Evaluador Automatizado de Empresas (E3)
+# 📌 Evaluador Automatizado de Empresas Según Requerimientos (E3)
 
-![Streamlit](https://img.shields.io/badge/Streamlit-App-red?style=flat&logo=streamlit)
-![Python](https://img.shields.io/badge/Python-3.9-blue?style=flat&logo=python)
-
-## 🚀 Accede a la Aplicación Web
-
-🔗 [E3 - Evaluador Automatizado de Empresas](https://iapromptv-a-2eqe8j67tnkvat972ihnmy.streamlit.app/)
+## 🌐 Accede a la Aplicación Web
+🔗 [Haz clic aquí para probar la app en Streamlit](https://iapromptv-a-2eqe8j67tnkvat972ihnmy.streamlit.app/)
 
 ---
 
-## 📖 Introducción
+## 📝 Descripción
+**Evaluador Automatizado de Empresas Según Requerimientos (E3)** es una aplicación diseñada para ayudar a equipos de adquisiciones a investigar empresas potenciales de manera eficiente. 
 
-### 🎯 Nombre del Proyecto
-**Evaluador Automatizado de Empresas (E3)**
+🔍 **¿Cómo funciona?**
+1. El usuario ingresa hasta **cinco URLs** de sitios web de empresas.
+2. La app extrae información clave de los sitios web y LinkedIn (si está disponible).
+3. Se procesan los datos con **GPT-4** para generar un resumen estructurado.
+4. La información se muestra en una tabla y se puede descargar en formato **CSV**.
 
-### 🧐 Problema a Abordar
-El equipo de adquisiciones necesita investigar empresas potenciales para evaluar oportunidades de compra basadas en criterios como *headcount*, *revenue*, *país*, *servicios ofrecidos* y *sostenibilidad*. 
+---
 
-Actualmente, este proceso es manual y consume mucho tiempo, además de que la información puede ser inconsistente o difícil de comparar. La falta de una herramienta automatizada para extraer y estandarizar estos datos genera ineficiencias en la toma de decisiones.
+## 🚀 Introducción
+### 📌 Nombre del Proyecto
+**Evaluador Automatizado de Empresas Según Requerimientos (E3)**
 
-### 💡 Desarrollo de la Propuesta de Solución
-La solución planteada consiste en una aplicación basada en **IA generativa** y **web scraping** que extrae, organiza y presenta la información clave de las empresas desde sus sitios web y perfiles de LinkedIn.
+### 🏆 Problema a Abordar
+Los equipos de adquisiciones invierten mucho tiempo en investigar empresas potenciales según criterios como **headcount**, **servicios ofrecidos**, **revenue**, **país del headquarter** y **sustentabilidad**. Este proceso manual puede ser ineficiente, propenso a errores y con información desactualizada. 
 
-A través de **prompts optimizados en GPT-4**, la aplicación transforma el contenido extraído en información estructurada y relevante para el equipo de adquisiciones, reduciendo el tiempo de búsqueda y mejorando la exactitud de los datos.
+### 💡 Propuesta de Solución
+E3 utiliza técnicas de **web scraping** y **procesamiento con GPT-4** para **automatizar la investigación** de empresas. A través de **prompts predefinidos**, extrae y resume la información relevante de sitios web y perfiles de LinkedIn.
 
 ---
 
 ## 🎯 Objetivos
-
-✅ Automatizar la recopilación de información clave de empresas a partir de fuentes en línea.  
-✅ Generar resúmenes estructurados sobre cada empresa en base a criterios predefinidos.  
-✅ Facilitar la toma de decisiones del equipo de adquisiciones al proporcionar datos comparables.  
-✅ Implementar una aplicación web accesible que permita a los usuarios ingresar URLs de empresas y recibir reportes inmediatos.
+✅ Extraer información estructurada de sitios web y LinkedIn.
+✅ Generar reportes con los datos obtenidos.
+✅ Reducir el tiempo de investigación manual.
+✅ Proveer una interfaz amigable para el usuario.
 
 ---
 
 ## 🔧 Metodología
+### 📌 Procedimientos Implementados
+1. **Scraping de contenido** de sitios web y LinkedIn.
+2. **Procesamiento con GPT-4** para estructurar y resumir la información.
+3. **Visualización de los datos** en Streamlit.
+4. **Generación de archivos CSV** descargables.
 
-1. **Extracción de datos**: Se utiliza *web scraping* para obtener información desde los sitios web y LinkedIn de las empresas.
-2. **Procesamiento con GPT-4**: Se envía el contenido extraído a **GPT-4** para extraer y estructurar la información relevante.
-3. **Visualización y exportación**: Los datos se presentan en la interfaz de la aplicación con opción de descarga en CSV.
+### 📌 Justificación de la Viabilidad
+El proyecto es viable ya que:
+- Utiliza tecnologías de acceso libre y bajo costo.
+- Está desarrollado en **Python**, con librerías eficientes para scraping y procesamiento de datos.
+- Aprovecha la **API de OpenAI** para obtener información estructurada.
 
 ---
 
 ## 🛠️ Herramientas y Tecnologías
-
-✅ **Lenguaje de programación**: Python.  
-✅ **Framework Web**: Streamlit.  
-✅ **Librerías**: `requests`, `BeautifulSoup`, `pandas`, `openai`, `python-dotenv`.  
-✅ **IA Generativa**: GPT-4.  
-✅ **Hosting**: Streamlit Cloud.  
-
----
-
-## 🏗️ Arquitectura de la Aplicación
-
-📌 **Interfaz Web**: Los usuarios ingresan URLs de empresas en la app.  
-📌 **Scraper**: Extrae contenido de los sitios web y perfiles de LinkedIn.  
-📌 **Procesador IA**: Utiliza **GPT-4** para analizar y estructurar la información extraída.  
-📌 **Visualización de Datos**: Presenta los datos de forma tabular en la interfaz y permite la exportación en CSV.
+- **Streamlit** → Para la interfaz interactiva.
+- **BeautifulSoup** → Para el scraping de datos.
+- **OpenAI API** → Para el análisis de contenido con GPT-4.
+- **Pandas** → Para estructurar y exportar los datos.
+- **Python-dotenv** → Para la gestión segura de credenciales.
 
 ---
 
-## 📁 Estructura del Proyecto
+## 📌 Arquitectura de la Aplicación
 ```
-📂 ia_prompt_v-a
-│── .env                 # Variables de entorno (clave API de OpenAI)
-│── .gitignore           # Archivos y carpetas ignorados por Git
-│── app.py               # Código principal de la aplicación Streamlit
-│── requirements.txt     # Dependencias necesarias para ejecutar la app
-│── companies_info.csv   # Archivo CSV generado con los datos extraídos
-│── README.md            # Documentación del proyecto
-│
-└─── .devcontainer
-    └── devcontainer.json  # Configuración del entorno de desarrollo
+📂 E3-Project
+│── .env  # Variables de entorno (API Key)
+│── .gitignore  # Archivos a excluir en Git
+│── app.py  # Código principal de la aplicación
+│── companies_info.csv  # Datos exportados en CSV
+│── README.md  # Documentación del proyecto
+│── requeriments.txt  # Dependencias necesarias
+│── .devcontainer/  # Configuración para entornos de desarrollo
 ```
 
 ---
 
-## 🔧 Instalación y Configuración
+## ⚡ Instalación y Configuración
+### 🔧 Instalación
+1. **Clona el repositorio**:
+   ```bash
+   git clone https://github.com/tuusuario/E3-Project.git
+   cd E3-Project
+   ```
+2. **Crea un entorno virtual**:
+   ```bash
+   python -m venv env
+   source env/bin/activate  # Mac/Linux
+   env\Scripts\activate  # Windows
+   ```
+3. **Instala dependencias**:
+   ```bash
+   pip install -r requeriments.txt
+   ```
+4. **Configura tu API Key de OpenAI**:
+   - Crea un archivo `.env` en la raíz del proyecto.
+   - Agrega la línea:
+     ```
+     OPENAI_API_KEY=tu_clave_aqui
+     ```
 
-Para ejecutar la aplicación localmente, sigue estos pasos:
-
-### 1️⃣ Clonar el repositorio
-```bash
-git clone https://github.com/nicolinolochex/IA_Prompt_V-A.git
-cd IA_Prompt_V-A
-```
-
-### 2️⃣ Crear un entorno virtual e instalar dependencias
-```bash
-python -m venv venv
-source venv/bin/activate  # En Mac/Linux
-venv\Scripts\activate    # En Windows
-pip install -r requirements.txt
-```
-
-### 3️⃣ Configurar la clave de OpenAI
-Crea un archivo `.env` en la raíz del proyecto y agrega:
-```
-OPENAI_API_KEY=tu_clave_de_openai
-```
-
-### 4️⃣ Ejecutar la aplicación
+### 🚀 Ejecución de la Aplicación
+Para iniciar la aplicación, ejecuta:
 ```bash
 streamlit run app.py
 ```
@@ -110,14 +107,17 @@ streamlit run app.py
 ---
 
 ## 📌 Próximos Pasos
-
-🚀 **Optimizar la extracción de datos**: Mejorar la precisión de los scrapers para sitios web complejos.  
-🚀 **Agregar más fuentes de datos**: Integrar APIs de información empresarial para mejorar la cobertura de datos.  
-🚀 **Implementar autenticación de usuarios**: Control de acceso para distintos perfiles de usuario.  
+✅ Optimización de scraping para obtener más información.
+✅ Implementación de análisis adicionales con IA.
+✅ Integración con bases de datos para almacenamiento de información.
 
 ---
 
-## 📩 Contáctame
-📧 **Email:** arandigacatriel@gmail.com
-🔗 **LinkedIn:** [Catriel Nicolás Arandiga](https://www.linkedin.com/in/catriel-nicolas-arandiga)
+## 📞 Contáctame
+Si tienes dudas o sugerencias, ¡hablemos! 
+
+📧 Email: [arandigacatriel@gmail.com](mailto:arandigacatriel@gmail.com)  
+🔗 LinkedIn: [Catriel Nicolás Arándiga](https://www.linkedin.com/in/catriel-nicolas-arandiga)
+
+🚀 ¡Gracias por leer!
 
