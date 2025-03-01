@@ -1,107 +1,123 @@
-# Proyecto Propuesto: Evaluador Automatizado de Empresas Según Requerimientos (E3)
+# 📌 Evaluador Automatizado de Empresas Según Requerimientos (E3)
+
+## 🌐 Accede a la Aplicación Web
+🔗 [Haz clic aquí para probar la app en Streamlit](https://iapromptv-a-2eqe8j67tnkvat972ihnmy.streamlit.app/)
 
 ---
 
-## Hola Profe,
+## 📝 Descripción
+**Evaluador Automatizado de Empresas Según Requerimientos (E3)** es una aplicación diseñada para ayudar a equipos de adquisiciones a investigar empresas potenciales de manera eficiente. 
 
-Le presento mi idea y doy un poco de contexto. Trabajo en un equipo de **Adquisiciones** en la rama de **BI**, y basándome en las necesidades operativas del equipo —que se encarga de investigar empresas potenciales para adquirir, de acuerdo a ciertos criterios definidos por el management (como *revenue*, *país*, *headcount*, etc.)—, creo que podamos desarrollar algunos prompts que los ayuden en sus tareas diarias para mejorar los tiempos en la devolución de solicitudes y la exactitud de los datos que manejamos.
-
-A continuación, resumo mi propuesta en tres puntos principales.
-
----
-
-## Resumen de la Idea
-
-El sistema automatizará la investigación de empresas a partir de información disponible en la web (por ejemplo, en sus sitios corporativos o perfiles de LinkedIn). A partir de parámetros definidos (como **headcount**, **servicios ofrecidos**, **revenue**, **país del headquarter** y si la empresa es **sustentable** o no), el sistema:
-
-- Extraerá la información relevante.
-- Generará un resumen evaluativo.
-- Asignará un puntaje a cada empresa para determinar cuáles cumplen mejor con los requisitos del equipo.
+🔍 **¿Cómo funciona?**
+1. El usuario ingresa hasta **cinco URLs** de sitios web de empresas.
+2. La app extrae información clave de los sitios web y LinkedIn (si está disponible).
+3. Se procesan los datos con **GPT-4** para generar un resumen estructurado.
+4. La información se muestra en una tabla y se puede descargar en formato **CSV**.
 
 ---
 
-## Funcionalidades Clave
+## 🚀 Introducción
+### 📌 Nombre del Proyecto
+**Evaluador Automatizado de Empresas Según Requerimientos (E3)**
 
-### 1. Listado de Empresas Basado en Requerimientos Predefinidos
+### 🏆 Problema a Abordar
+Los equipos de adquisiciones invierten mucho tiempo en investigar empresas potenciales según criterios como **headcount**, **servicios ofrecidos**, **revenue**, **país del headquarter** y **sustentabilidad**. Este proceso manual puede ser ineficiente, propenso a errores y con información desactualizada. 
 
-- **Objetivo:**  
-  Dado un conjunto de criterios (ej.: *headcount*, *servicios*, *revenue*, *ubicación* y *sostenibilidad*), el sistema proporcionará un listado de empresas que cumplan en mayor medida esos requerimientos.
-
-- **Implementación:**  
-  - Utilizar un **prompt predefinido** en GPT-4 para solicitar un listado basado en los criterios.
-  - Integrar información extraída de sitios corporativos y perfiles de LinkedIn, ya sea mediante **web scraping** o **APIs** disponibles.
-
----
-
-### 2. Extracción de Información Relevante de Páginas Web y Perfiles en LinkedIn
-
-- **Objetivo:**  
-  Recopilar y procesar información clave de las empresas desde sus sitios web y/o perfiles de LinkedIn, extrayendo datos como:
-  - Número de empleados.
-  - Servicios ofrecidos.
-  - Revenue.
-  - País de la sede.
-  - Iniciativas de sustentabilidad.
-
-- **Implementación:**  
-  - **Scraping:**  
-    Desarrollar scripts en Python (usando librerías como *BeautifulSoup* o *Selenium*) para obtener el contenido de las páginas y perfiles.
-  - **Procesamiento con GPT-4:**  
-    Crear un prompt que, al recibir el contenido textual extraído, genere un extracto **estructurado** y **conciso** de los datos relevantes.
-
-  - **Ejemplo de Prompt:**  
-    > "A partir del siguiente contenido web, extrae y resume la siguiente información: número de empleados, servicios ofrecidos, revenue, país del headquarter y si la empresa se posiciona como sustentable. Presenta la información de forma estructurada."
+### 💡 Propuesta de Solución
+E3 utiliza técnicas de **web scraping** y **procesamiento con GPT-4** para **automatizar la investigación** de empresas. A través de **prompts predefinidos**, extrae y resume la información relevante de sitios web y perfiles de LinkedIn.
 
 ---
 
-### 3. Asignación de Puntaje y Selección de las Mejores Opciones
-
-- **Objetivo:**  
-  Evaluar cada empresa en función de qué tan bien cumplen con los requerimientos establecidos y asignarles un **puntaje** que permita ordenarlas de acuerdo a su encaje con dichos criterios.
-
-- **Implementación:**  
-  - Definir una **fórmula de scoring** en la que cada criterio tenga un peso específico (por ejemplo, *revenue* y *sostenibilidad* pueden tener mayor peso).
-  - Generar un prompt para GPT-4 que, a partir de la información extraída, asigne un puntaje y ofrezca una breve justificación.
-
-  - **Ejemplo de Prompt:**  
-    > "Dada la siguiente información sobre la empresa [extracto estructurado] y considerando los siguientes pesos para cada criterio (*headcount*, *servicios*, *revenue*, *país*, *sustentabilidad*), asigna un puntaje del 1 al 10 y explica brevemente por qué se asignó ese puntaje."
+## 🎯 Objetivos
+✅ Extraer información estructurada de sitios web y LinkedIn.
+✅ Generar reportes con los datos obtenidos.
+✅ Reducir el tiempo de investigación manual.
+✅ Proveer una interfaz amigable para el usuario.
 
 ---
 
-## Flujo de Datos y Consideraciones Técnicas
+## 🔧 Metodología
+### 📌 Procedimientos Implementados
+1. **Scraping de contenido** de sitios web y LinkedIn.
+2. **Procesamiento con GPT-4** para estructurar y resumir la información.
+3. **Visualización de los datos** en Streamlit.
+4. **Generación de archivos CSV** descargables.
 
-1. **Entrada de Requerimientos y URLs:**  
-   - El usuario define los criterios deseados.  
-   - Se provee una lista de URLs o perfiles de LinkedIn a analizar.
-
-2. **Extracción y Preprocesamiento:**  
-   - Se utiliza **web scraping** para obtener el contenido textual de las páginas y perfiles.  
-   - El contenido es procesado para eliminar ruido y obtener la información relevante.
-
-3. **Procesamiento con GPT-4:**  
-   - Se emplean **prompts predefinidos** para extraer la información estructurada de cada fuente.  
-   - Se genera un resumen evaluativo de cada empresa basándose en los criterios.
-
-4. **Evaluación y Puntaje:**  
-   - Se asigna un puntaje a cada empresa mediante una función o prompt que integre los datos y criterios definidos.  
-   - Se presenta un **ranking** de empresas que mejor se ajusten a los requerimientos.
-
-5. **Visualización y Reporte:**  
-   - Se pueden generar reportes visuales, dashboards o incluso infografías (posiblemente utilizando **DALL-E** para representar gráficamente el nivel de encaje).
+### 📌 Justificación de la Viabilidad
+El proyecto es viable ya que:
+- Utiliza tecnologías de acceso libre y bajo costo.
+- Está desarrollado en **Python**, con librerías eficientes para scraping y procesamiento de datos.
+- Aprovecha la **API de OpenAI** para obtener información estructurada.
 
 ---
 
-## Viabilidad Técnica y Justificación
-
-- **Recursos Disponibles:**  
-  Mi experiencia en análisis de datos y el acceso a herramientas de scraping, junto con las APIs de OpenAI, hacen factible la implementación de este sistema.
-
-- **Tiempo y Limitaciones:**  
-  Será necesario coordinar la integración de múltiples fuentes de datos, el procesamiento con GPT-4 y la asignación de puntajes, considerando la cuota y el costo de las APIs.
-
-- **Valor Agregado:**  
-  Automatizar la evaluación y clasificación de empresas basándose en criterios predefinidos mejora la eficiencia en el proceso de investigación, permitiendo que el equipo se concentre en análisis estratégicos y optimizando la toma de decisiones.
+## 🛠️ Herramientas y Tecnologías
+- **Streamlit** → Para la interfaz interactiva.
+- **BeautifulSoup** → Para el scraping de datos.
+- **OpenAI API** → Para el análisis de contenido con GPT-4.
+- **Pandas** → Para estructurar y exportar los datos.
+- **Python-dotenv** → Para la gestión segura de credenciales.
 
 ---
 
-Esta propuesta se alinea con las necesidades del equipo y mi rol dentro de la organización, ofreciendo una solución innovadora para agilizar el proceso de research y evaluación de empresas. Quedo atento a sus comentarios o sugerencias para seguir mejorando la propuesta.
+## 📌 Arquitectura de la Aplicación
+```
+📂 E3-Project
+│── .env  # Variables de entorno (API Key)
+│── .gitignore  # Archivos a excluir en Git
+│── app.py  # Código principal de la aplicación
+│── companies_info.csv  # Datos exportados en CSV
+│── README.md  # Documentación del proyecto
+│── requeriments.txt  # Dependencias necesarias
+│── .devcontainer/  # Configuración para entornos de desarrollo
+```
+
+---
+
+## ⚡ Instalación y Configuración
+### 🔧 Instalación
+1. **Clona el repositorio**:
+   ```bash
+   git clone https://github.com/tuusuario/E3-Project.git
+   cd E3-Project
+   ```
+2. **Crea un entorno virtual**:
+   ```bash
+   python -m venv env
+   source env/bin/activate  # Mac/Linux
+   env\Scripts\activate  # Windows
+   ```
+3. **Instala dependencias**:
+   ```bash
+   pip install -r requeriments.txt
+   ```
+4. **Configura tu API Key de OpenAI**:
+   - Crea un archivo `.env` en la raíz del proyecto.
+   - Agrega la línea:
+     ```
+     OPENAI_API_KEY=tu_clave_aqui
+     ```
+
+### 🚀 Ejecución de la Aplicación
+Para iniciar la aplicación, ejecuta:
+```bash
+streamlit run app.py
+```
+
+---
+
+## 📌 Próximos Pasos
+✅ Optimización de scraping para obtener más información.
+✅ Implementación de análisis adicionales con IA.
+✅ Integración con bases de datos para almacenamiento de información.
+
+---
+
+## 📞 Contáctame
+Si tienes dudas o sugerencias, ¡hablemos! 
+
+📧 Email: [arandigacatriel@gmail.com](mailto:arandigacatriel@gmail.com)  
+🔗 LinkedIn: [Catriel Nicolás Arándiga](https://www.linkedin.com/in/catriel-nicolas-arandiga)
+
+🚀 ¡Gracias por leer!
+
