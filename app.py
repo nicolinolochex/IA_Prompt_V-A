@@ -62,6 +62,8 @@ def find_linkedin_url(soup):
 
 def clean_extraction(text):
     """Cleans extracted JSON response from GPT-4."""
+    if text is None:
+        return None
     cleaned = text.strip()
     if cleaned.startswith("```") and cleaned.endswith("```"):
         cleaned = cleaned.strip("```").strip()
@@ -90,8 +92,13 @@ def extract_company_info(content, website_url, source="website"):
             temperature=0.7,
             max_tokens=600
         )
-        info = response.choices[0].message['content']
-        return info
+        if response and response.choices:
+            info = response.choices[0].message.get('content', '').strip()
+            if not info:
+                raise ValueError("Empty response from GPT-4")
+            return info
+        else:
+            raise ValueError("No valid response from GPT-4")
     except Exception as e:
         st.error(f"Error during GPT-4 extraction: {e}")
         return None
@@ -115,79 +122,3 @@ def merge_info(website_info, linkedin_info):
         linkedin_value = linkedin_info.get(key, None) if linkedin_info else None
         merged[key] = linkedin_value if is_nonempty(linkedin_value) else website_value
     return merged
-
-def process_company(company_url):
-    """Processes a single company URL, scraping data from the website and LinkedIn."""
-    st.info(f"Processing company: {company_url}")
-
-    website_text, website_soup = scrape_web_content(company_url)
-    if website_text is None:
-        st.error(f"Could not retrieve content from {company_url}.")
-        return {}
-
-    extracted_info_website = extract_company_info(website_text, company_url, source="website")
-    cleaned_website_text = clean_extraction(extracted_info_website)
-
-    try:
-        website_info = json.loads(cleaned_website_text)
-    except Exception as e:
-        st.error(f"Error parsing website JSON: {e}")
-        website_info = {}
-
-    linkedin_info = {}
-    linkedin_url = find_linkedin_url(website_soup)
-    if linkedin_url:
-        st.write(f"Found LinkedIn URL: {linkedin_url}")
-        linkedin_text, _ = scrape_web_content(linkedin_url)
-        if linkedin_text:
-            extracted_info_linkedin = extract_company_info(linkedin_text, company_url, source="LinkedIn")
-            cleaned_linkedin_text = clean_extraction(extracted_info_linkedin)
-            try:
-                linkedin_info = json.loads(cleaned_linkedin_text)
-            except Exception as e:
-                st.error(f"Error parsing LinkedIn JSON: {e}")
-                linkedin_info = {}
-        else:
-            st.error("Could not retrieve content from LinkedIn.")
-    else:
-        st.warning("No LinkedIn URL found on the website.")
-
-    final_info = merge_info(website_info, linkedin_info)
-    return final_info
-
-# ---------------------- Interfaz en Streamlit ----------------------
-
-st.title("Company Research Tool")
-st.write("Enter up to 5 company website URLs to extract and analyze information.")
-
-# Entradas para URLs
-url_inputs = []
-for i in range(5):
-    url = st.text_input(f"Company {i+1} URL:")
-    url_inputs.append(url)
-
-if st.button("Process Companies"):
-    urls = [u.strip() for u in url_inputs if u.strip() != ""]
-    
-    if not urls:
-        st.error("Please enter at least one valid company URL.")
-    else:
-        results = []
-        for u in urls:
-            info = process_company(u)
-            if info:
-                results.append(info)
-
-        if results:
-            df_final = pd.DataFrame(results, columns=["name", "website", "ownership", "country", "brief_description", "services", "headcount", "revenue"])
-            st.subheader("Extracted Company Information:")
-            st.dataframe(df_final)
-
-            # Guardar el CSV con ";" como separador
-            output_csv = "companies_info.csv"
-            df_final.to_csv(output_csv, index=False, sep=";")
-
-            st.success(f"Data has been saved to `{output_csv}`.")
-            st.download_button("Download CSV", df_final.to_csv(index=False, sep=";"), file_name="companies_info.csv", mime="text/csv")
-        else:
-            st.error("No information was extracted.")
