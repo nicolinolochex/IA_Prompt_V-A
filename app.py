@@ -128,21 +128,67 @@ def process_company(company_url):
     return final_info
 
 
-def save_search_to_db(company_url, linkedin_url, data):
-    """Guarda la búsqueda en la base de datos."""
-    conn = sqlite3.connect("history.db")
-    cursor = conn.cursor()
-    cursor.execute("""
-    INSERT INTO searches (company_url, linkedin_url, name, website, ownership, country, brief_description, services, headcount, revenue)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-        company_url, linkedin_url,
-        data.get("name"), data.get("website"), data.get("ownership"),
-        data.get("country"), data.get("brief_description"),
-        data.get("services"), data.get("headcount"), data.get("revenue")
-    ))
-    conn.commit()
-    conn.close()
+import sqlite3
+
+def save_search_to_db(company_url, linkedin_url, final_info):
+    """Guarda los resultados en la base de datos SQLite."""
+    try:
+        conn = sqlite3.connect("search_history.db")
+        cursor = conn.cursor()
+
+        # Crear tabla si no existe
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS search_history (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                company_url TEXT,
+                linkedin_url TEXT,
+                name TEXT,
+                website TEXT,
+                ownership TEXT,
+                country TEXT,
+                brief_description TEXT,
+                services TEXT,
+                headcount TEXT,
+                revenue TEXT,
+                search_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+        # Convertir valores a string (manejo de None y listas)
+        def safe_str(value):
+            if value is None:
+                return "N/A"  # Para evitar errores en valores nulos
+            elif isinstance(value, list):
+                return ", ".join(map(str, value))  # Convierte listas en strings separados por comas
+            return str(value)
+
+        # Extraer valores de final_info y asegurarse de que sean strings
+        values = (
+            company_url,
+            linkedin_url or "N/A",
+            safe_str(final_info.get("name")),
+            safe_str(final_info.get("website")),
+            safe_str(final_info.get("ownership")),
+            safe_str(final_info.get("country")),
+            safe_str(final_info.get("brief_description")),
+            safe_str(final_info.get("services")),
+            safe_str(final_info.get("headcount")),
+            safe_str(final_info.get("revenue")),
+        )
+
+        # Insertar en la base de datos
+        cursor.execute("""
+            INSERT INTO search_history (company_url, linkedin_url, name, website, ownership, country, brief_description, services, headcount, revenue)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, values)
+
+        conn.commit()
+        conn.close()
+        print("✅ Búsqueda guardada en la base de datos.")
+
+    except Exception as e:
+        print(f"❌ Error guardando en la base de datos: {e}")
+
 
 
 # ---------------------- Interfaz en Streamlit ----------------------
