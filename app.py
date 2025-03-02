@@ -144,21 +144,32 @@ def save_search_to_db(company_url, linkedin_url, data):
     conn.commit()
     conn.close()
 
-
 # ---------------------- Interfaz en Streamlit ----------------------
 
-st.title("Company Research Tool")
-st.write("Enter company URLs to analyze and extract information.")
+def show_search_history():
+    conn = sqlite3.connect("history.db")
+    df = pd.read_sql_query("SELECT * FROM searches ORDER BY date DESC", conn)
+    conn.close()
+    st.subheader("Historial de Búsquedas")
+    search_query = st.text_input("Filtrar por nombre de empresa:")
+    if search_query:
+        df = df[df['name'].str.contains(search_query, na=False, case=False)]
+    st.dataframe(df)
 
-urls = [st.text_input(f"Company {i+1} URL:") for i in range(5)]
-
-if st.button("Process Companies"):
-    valid_urls = [u.strip() for u in urls if u.strip()]
-    if not valid_urls:
-        st.error("Please enter at least one valid company URL.")
+def main():
+    st.title("Company Research Tool")
+    if st.sidebar.button("Ver Historial de Búsquedas"):
+        show_search_history()
     else:
-        results = [process_company(url) for url in valid_urls]
-        df = pd.DataFrame(results)
-        st.dataframe(df)
-        df.to_csv("companies_info.csv", index=False, sep=";")
-        st.download_button("Download CSV", df.to_csv(index=False, sep=";"), file_name="companies_info.csv", mime="text/csv")
+        urls = [st.text_input(f"Company {i+1} URL:") for i in range(5)]
+        if st.button("Process Companies"):
+            valid_urls = [u.strip() for u in urls if u.strip()]
+            if not valid_urls:
+                st.error("Please enter at least one valid company URL.")
+            else:
+                results = [process_company(url) for url in valid_urls]
+                df = pd.DataFrame(results)
+                st.dataframe(df)
+
+if __name__ == "__main__":
+    main()
