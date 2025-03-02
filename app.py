@@ -9,15 +9,14 @@ import pandas as pd
 import os
 from dotenv import load_dotenv
 
-# Cargar las variables de entorno
+# Load environment variables
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# Configuración de costos estimados de tokens en GPT-4
-COST_PER_1K_TOKENS = 0.03  # Estimado, puede variar
+# Estimated cost per 1K tokens in GPT-4
+COST_PER_1K_TOKENS = 0.03
 
-# ---------------------- Configurar Base de Datos para Historial ----------------------
-
+# ---------------------- Initialize Database ----------------------
 def init_db():
     conn = sqlite3.connect("history.db")
     cursor = conn.cursor()
@@ -40,8 +39,7 @@ def init_db():
 
 init_db()
 
-# ---------------------- Funciones de Scraping y Extracción ----------------------
-
+# ---------------------- Web Scraping Functions ----------------------
 def scrape_web_content(url):
     """Scrapes textual content from the given URL."""
     headers = {"User-Agent": "Mozilla/5.0"}
@@ -87,7 +85,7 @@ def extract_company_info(content, website_url, source="website"):
     Content:
     {content[:4000]}  # Limit content size
     """
-
+    
     try:
         response = openai.ChatCompletion.create(
             model="gpt-4",
@@ -129,7 +127,7 @@ def process_company(company_url):
 
 
 def save_search_to_db(company_url, linkedin_url, data):
-    """Guarda la búsqueda en la base de datos."""
+    """Saves the search result to the database."""
     conn = sqlite3.connect("history.db")
     cursor = conn.cursor()
     cursor.execute("""
@@ -144,32 +142,32 @@ def save_search_to_db(company_url, linkedin_url, data):
     conn.commit()
     conn.close()
 
-# ---------------------- Interfaz en Streamlit ----------------------
+# ---------------------- Streamlit Interface ----------------------
+st.sidebar.title("Navigation")
+page = st.sidebar.radio("Go to:", ["Company Search", "Search History"])
 
-def show_search_history():
+if page == "Company Search":
+    st.title("Company Research Tool")
+    st.write("Enter company URLs to analyze and extract information.")
+    urls = [st.text_input(f"Company {i+1} URL:") for i in range(5)]
+    if st.button("Process Companies"):
+        valid_urls = [u.strip() for u in urls if u.strip()]
+        if not valid_urls:
+            st.error("Please enter at least one valid company URL.")
+        else:
+            results = [process_company(url) for url in valid_urls]
+            df = pd.DataFrame(results)
+            st.dataframe(df)
+            df.to_csv("companies_info.csv", index=False, sep=";")
+            st.download_button("Download CSV", df.to_csv(index=False, sep=";"), file_name="companies_info.csv", mime="text/csv")
+
+elif page == "Search History":
+    st.title("Search History")
     conn = sqlite3.connect("history.db")
     df = pd.read_sql_query("SELECT * FROM searches ORDER BY date DESC", conn)
     conn.close()
-    st.subheader("Historial de Búsquedas")
-    search_query = st.text_input("Filtrar por nombre de empresa:")
-    if search_query:
-        df = df[df['name'].str.contains(search_query, na=False, case=False)]
+    search_filter = st.text_input("Filter by company name:")
+    if search_filter:
+        df = df[df["name"].str.contains(search_filter, case=False, na=False)]
     st.dataframe(df)
-
-def main():
-    st.title("Company Research Tool")
-    if st.sidebar.button("Ver Historial de Búsquedas"):
-        show_search_history()
-    else:
-        urls = [st.text_input(f"Company {i+1} URL:") for i in range(5)]
-        if st.button("Process Companies"):
-            valid_urls = [u.strip() for u in urls if u.strip()]
-            if not valid_urls:
-                st.error("Please enter at least one valid company URL.")
-            else:
-                results = [process_company(url) for url in valid_urls]
-                df = pd.DataFrame(results)
-                st.dataframe(df)
-
-if __name__ == "__main__":
-    main()
+    st.button("Back to Search", on_click=lambda: st.sidebar.radio("Go to:", ["Company Search"]))
