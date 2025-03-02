@@ -139,18 +139,37 @@ def save_search_to_db(company_url, linkedin_url, data):
     conn.close()
 
 # ---------------------- Streamlit UI ----------------------
-# LinkedIn Profile Image and Link at the top of Sidebar
+# URL de la foto de perfil de LinkedIn
 linkedin_image_url = "https://media.licdn.com/dms/image/v2/D4E03AQHFFEQls8Yz-w/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1702933383349?e=1746662400&v=beta&t=tYwSt2scB5uEJfWvlLdg19ycRkfvAFGRNj1X3JcNGOc"
 
-st.sidebar.image(linkedin_image_url, width=120)
+# CSS para centrar la imagen
 st.sidebar.markdown(
-    "[👤 Visit my LinkedIn](https://www.linkedin.com/in/catriel-nicolas-arandiga)", 
+    f"""
+    <div style="display: flex; justify-content: center; margin-bottom: 10px;">
+        <img src="{linkedin_image_url}" width="120" style="border-radius: 50%;">
+    </div>
+    """, 
     unsafe_allow_html=True
 )
 
+# Muestra tu nombre centrado
+st.sidebar.markdown("<h4 style='text-align: center;'>Catriel Nicolas Arandiga</h4>", unsafe_allow_html=True)
+
+# URL del icono de LinkedIn
+linkedin_icon_url = "https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png"
+
+# Agrega el enlace a LinkedIn con icono
 st.sidebar.markdown(
-    "[Visit my LinkedIn](https://www.linkedin.com/in/catriel-nicolas-arandiga)", unsafe_allow_html=True
+    f"""
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <a href="https://www.linkedin.com/in/catriel-nicolas-arandiga" target="_blank" style="font-size: 16px; text-decoration: none; display: flex; align-items: center;">
+            <img src="{linkedin_icon_url}" width="20" style="margin-right: 5px;"/> LinkedIn Profile
+        </a>
+    </div>
+    """, 
+    unsafe_allow_html=True
 )
+
 
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to:", ["Company Search", "Search History"])
