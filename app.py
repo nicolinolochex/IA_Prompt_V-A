@@ -179,3 +179,12 @@ elif page == "Search History":
 
     if st.button("Back to Search"):
         st.experimental_set_query_params(page="Company Search")
+        
+# Add LinkedIn profile at the top of the sidebar
+linkedin_image_url = "https://media.licdn.com/dms/image/v2/D4E03AQHFFEQls8Yz-w/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1702933383349?e=1746662400&v=beta&t=tYwSt2scB5uEJfWvlLdg19ycRkfvAFGRNj1X3JcNGOc"
+
+st.sidebar.image(linkedin_image_url, width=120)
+st.sidebar.markdown(
+    "[👤 Visit my LinkedIn](https://www.linkedin.com/in/catriel-nicolas-arandiga)", 
+    unsafe_allow_html=True
+)
