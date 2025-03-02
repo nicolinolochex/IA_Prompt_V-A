@@ -8,17 +8,6 @@ import json
 import pandas as pd
 import os
 from dotenv import load_dotenv
-import logging
-from datetime import datetime
-import pdfkit
-from flask import Flask, jsonify, request
-
-# Configurar logging
-logging.basicConfig(
-    filename="app.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
 
 # Cargar las variables de entorno
 load_dotenv()
@@ -27,7 +16,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 # Configuración de costos estimados de tokens en GPT-4
 COST_PER_1K_TOKENS = 0.03  # Estimado, puede variar
 
-# ---------------------- Configurar Base de Datos ----------------------
+# ---------------------- Configurar Base de Datos para Historial ----------------------
 
 def init_db():
     conn = sqlite3.connect("history.db")
@@ -44,8 +33,6 @@ def init_db():
                       services TEXT,
                       headcount TEXT,
                       revenue TEXT,
-                      tokens_used INTEGER,
-                      cost_estimate REAL,
                       date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                       )''')
     conn.commit()
@@ -65,11 +52,12 @@ def scrape_web_content(url):
             text = soup.get_text(separator=' ', strip=True)
             return text, soup
         else:
-            logging.error(f"Error: Status code {response.status_code} for {url}")
+            st.error(f"Error: Status code {response.status_code} when accessing {url}")
             return None, None
     except Exception as e:
-        logging.error(f"Error accessing {url}: {e}")
+        st.error(f"Error accessing {url}: {e}")
         return None, None
+
 
 def find_linkedin_url(soup):
     """Finds the LinkedIn URL from the scraped website."""
@@ -80,12 +68,17 @@ def find_linkedin_url(soup):
         href = link['href']
         if "linkedin.com/company" in href:
             return href
+    for link in links:
+        href = link['href']
+        if "linkedin.com" in href:
+            return href
     return None
+
 
 def extract_company_info(content, website_url, source="website"):
     """Extracts company information using GPT-4."""
     if not content or len(content) < 50:
-        logging.warning("Insufficient content for GPT analysis.")
+        st.warning("Insufficient content extracted for GPT analysis.")
         return None
     
     prompt = f"""
@@ -94,7 +87,7 @@ def extract_company_info(content, website_url, source="website"):
     Content:
     {content[:4000]}  # Limit content size
     """
-    
+
     try:
         response = openai.ChatCompletion.create(
             model="gpt-4",
@@ -105,18 +98,21 @@ def extract_company_info(content, website_url, source="website"):
         info = response["choices"][0]["message"]["content"].strip()
         token_usage = response["usage"]["total_tokens"]
         cost_estimate = (token_usage / 1000) * COST_PER_1K_TOKENS
-        return info, token_usage, cost_estimate
+        st.write(f"Estimated GPT-4 cost: ${cost_estimate:.4f}")
+        return info
     except Exception as e:
-        logging.error(f"Error during GPT-4 extraction: {e}")
-        return None, 0, 0.0
+        st.error(f"Error during GPT-4 extraction: {e}")
+        return None
+
 
 def process_company(company_url):
     """Processes a single company URL, extracting website and LinkedIn data."""
+    st.info(f"Processing company: {company_url}")
     website_text, website_soup = scrape_web_content(company_url)
     if not website_text:
         return {}
     
-    website_info, tokens_used, cost_estimate = extract_company_info(website_text, company_url, source="website")
+    website_info = extract_company_info(website_text, company_url, source="website")
     website_info = json.loads(website_info) if website_info else {}
     
     linkedin_url = find_linkedin_url(website_soup)
@@ -124,36 +120,45 @@ def process_company(company_url):
     if linkedin_url:
         linkedin_text, _ = scrape_web_content(linkedin_url)
         if linkedin_text:
-            linkedin_info, tokens_used_li, cost_estimate_li = extract_company_info(linkedin_text, company_url, source="LinkedIn")
+            linkedin_info = extract_company_info(linkedin_text, company_url, source="LinkedIn")
             linkedin_info = json.loads(linkedin_info) if linkedin_info else {}
-            tokens_used += tokens_used_li
-            cost_estimate += cost_estimate_li
     
-    final_info = {**website_info, **linkedin_info, "linkedin_url": linkedin_url, "tokens_used": tokens_used, "cost_estimate": cost_estimate}
+    final_info = {**website_info, **linkedin_info, "linkedin_url": linkedin_url}
     save_search_to_db(company_url, linkedin_url, final_info)
     return final_info
+
 
 def save_search_to_db(company_url, linkedin_url, data):
     """Guarda la búsqueda en la base de datos."""
     conn = sqlite3.connect("history.db")
     cursor = conn.cursor()
     cursor.execute("""
-    INSERT INTO searches (company_url, linkedin_url, name, website, ownership, country, brief_description, services, headcount, revenue, tokens_used, cost_estimate)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO searches (company_url, linkedin_url, name, website, ownership, country, brief_description, services, headcount, revenue)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         company_url, linkedin_url,
         data.get("name"), data.get("website"), data.get("ownership"),
         data.get("country"), data.get("brief_description"),
-        data.get("services"), data.get("headcount"), data.get("revenue"),
-        data.get("tokens_used"), data.get("cost_estimate")
+        data.get("services"), data.get("headcount"), data.get("revenue")
     ))
     conn.commit()
     conn.close()
 
+
 # ---------------------- Interfaz en Streamlit ----------------------
+
 st.title("Company Research Tool")
+st.write("Enter company URLs to analyze and extract information.")
+
 urls = [st.text_input(f"Company {i+1} URL:") for i in range(5)]
+
 if st.button("Process Companies"):
-    results = [process_company(url) for url in urls if url.strip()]
-    df = pd.DataFrame(results)
-    st.dataframe(df)
+    valid_urls = [u.strip() for u in urls if u.strip()]
+    if not valid_urls:
+        st.error("Please enter at least one valid company URL.")
+    else:
+        results = [process_company(url) for url in valid_urls]
+        df = pd.DataFrame(results)
+        st.dataframe(df)
+        df.to_csv("companies_info.csv", index=False, sep=";")
+        st.download_button("Download CSV", df.to_csv(index=False, sep=";"), file_name="companies_info.csv", mime="text/csv")
