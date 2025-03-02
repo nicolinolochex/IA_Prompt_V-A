@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# Estimated cost per 1K tokens in GPT-4
+# Estimated token cost for GPT-4
 COST_PER_1K_TOKENS = 0.03
 
 # ---------------------- Initialize Database ----------------------
@@ -56,7 +56,6 @@ def scrape_web_content(url):
         st.error(f"Error accessing {url}: {e}")
         return None, None
 
-
 def find_linkedin_url(soup):
     """Finds the LinkedIn URL from the scraped website."""
     if soup is None:
@@ -71,7 +70,6 @@ def find_linkedin_url(soup):
         if "linkedin.com" in href:
             return href
     return None
-
 
 def extract_company_info(content, website_url, source="website"):
     """Extracts company information using GPT-4."""
@@ -102,7 +100,6 @@ def extract_company_info(content, website_url, source="website"):
         st.error(f"Error during GPT-4 extraction: {e}")
         return None
 
-
 def process_company(company_url):
     """Processes a single company URL, extracting website and LinkedIn data."""
     st.info(f"Processing company: {company_url}")
@@ -125,7 +122,6 @@ def process_company(company_url):
     save_search_to_db(company_url, linkedin_url, final_info)
     return final_info
 
-
 def save_search_to_db(company_url, linkedin_url, data):
     """Saves the search result to the database."""
     conn = sqlite3.connect("history.db")
@@ -142,14 +138,21 @@ def save_search_to_db(company_url, linkedin_url, data):
     conn.commit()
     conn.close()
 
-# ---------------------- Streamlit Interface ----------------------
+# ---------------------- Streamlit UI ----------------------
+st.sidebar.image("linkedin_profile_picture.jpg", width=100)
+st.sidebar.markdown(
+    "[Visit my LinkedIn](https://www.linkedin.com/in/catriel-nicolas-arandiga)", unsafe_allow_html=True
+)
+
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to:", ["Company Search", "Search History"])
 
 if page == "Company Search":
     st.title("Company Research Tool")
     st.write("Enter company URLs to analyze and extract information.")
+
     urls = [st.text_input(f"Company {i+1} URL:") for i in range(5)]
+
     if st.button("Process Companies"):
         valid_urls = [u.strip() for u in urls if u.strip()]
         if not valid_urls:
@@ -163,11 +166,16 @@ if page == "Company Search":
 
 elif page == "Search History":
     st.title("Search History")
+
     conn = sqlite3.connect("history.db")
-    df = pd.read_sql_query("SELECT * FROM searches ORDER BY date DESC", conn)
+    df_history = pd.read_sql("SELECT * FROM searches ORDER BY date DESC", conn)
     conn.close()
+
     search_filter = st.text_input("Filter by company name:")
     if search_filter:
-        df = df[df["name"].str.contains(search_filter, case=False, na=False)]
-    st.dataframe(df)
-    st.button("Back to Search", on_click=lambda: st.sidebar.radio("Go to:", ["Company Search"]))
+        df_history = df_history[df_history["name"].str.contains(search_filter, case=False, na=False)]
+
+    st.dataframe(df_history)
+
+    if st.button("Back to Search"):
+        st.experimental_set_query_params(page="Company Search")
