@@ -242,17 +242,25 @@ if page == "Company Search":
     urls = [st.text_input(f"Company {i+1} URL:") for i in range(5)]
 
     if st.button("Process Companies"):
-        valid_urls = [u.strip() for u in urls if u.strip()]
-        if not valid_urls:
-            st.error("Please enter at least one valid company URL.")
-        else:
-            results = [process_company(url) for url in valid_urls]
-            df = pd.DataFrame(results)
-            st.dataframe(df)
-            st.subheader("Fundamentals Económicos")
-            st.dataframe(df[["name", "market_cap", "current_price", "year_change_pct"]])
-            df.to_csv("companies_info.csv", index=False, sep=";")
-            st.download_button("Download CSV", df.to_csv(index=False, sep=";"), file_name="companies_info.csv", mime="text/csv")
+    valid_urls = [u.strip() for u in urls if u.strip()]
+    if not valid_urls:
+        st.error("Please enter at least one valid company URL.")
+    else:
+        results = [process_company(url) for url in valid_urls]
+        df = pd.DataFrame(results)
+        st.dataframe(df)
+
+        # ← Inserta este fragmento aquí
+        for col in ["market_cap", "current_price", "year_change_pct"]:
+            if col not in df.columns:
+                df[col] = None
+
+        st.subheader("Fundamentals Económicos")
+        st.dataframe(df[["name", "market_cap", "current_price", "year_change_pct"]])
+
+        df.to_csv("companies_info.csv", index=False, sep=";")
+        st.download_button("Download CSV", df.to_csv(index=False, sep=";"), file_name="companies_info.csv", mime="text/csv")
+
 
 elif page == "Search History":
     st.title("Search History")
