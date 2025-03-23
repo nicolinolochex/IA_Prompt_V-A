@@ -5,3 +5,4 @@ beautifulsoup4>=4.13.3
 pandas>=1.5.3
 python-dotenv>=0.21.0
 yfinance
+matplotlib
