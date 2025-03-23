@@ -279,8 +279,8 @@ if page == "Company Search":
 
     urls = [st.text_input(f"Company {i+1} URL:") for i in range(5)]
 
-if st.button("Process Companies"):
-    valid_urls = [u.strip() for u in urls if u.strip()]
+    if st.button("Process Companies"):
+        valid_urls = [u.strip() for u in urls if u.strip()]
     if not valid_urls:
         st.error("Please enter at least one valid company URL.")
     else:
