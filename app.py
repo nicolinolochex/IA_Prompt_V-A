@@ -144,7 +144,7 @@ def process_company(company_url):
 
     final_info = {**website_info, **linkedin_info, "linkedin_url": linkedin_url}
     ticker = final_info.get("ticker")
-if ticker:
+    if ticker:
     final_info.update(fetch_financials(ticker))
 
     save_search_to_db(company_url, linkedin_url, final_info)
