@@ -230,6 +230,10 @@ st.sidebar.markdown(
     """, 
     unsafe_allow_html=True
 )
+lang = st.sidebar.selectbox("Idioma de salida", ["Original", "Español"])
+
+st.sidebar.title("Navigation")
+page = st.sidebar.radio("Go to:", ["Company Search", "Search History"])
 
 st.sidebar.markdown("""
 ## Descripción de la App
@@ -244,10 +248,7 @@ Esta herramienta automatiza el **research de empresas** para adquisiciones, redu
 Acelerar la obtención de insights confiables, mejorar la precisión de los datos y facilitar decisiones estratégicas.
 """, unsafe_allow_html=True)
 
-lang = st.sidebar.selectbox("Idioma de salida", ["Original", "Español"])
 
-st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to:", ["Company Search", "Search History"])
 
 if page == "Company Search":
     st.title("Company Research Tool")
