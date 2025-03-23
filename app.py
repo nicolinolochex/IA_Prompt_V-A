@@ -251,59 +251,55 @@ page = st.sidebar.radio("Go to:", ["Company Search", "Search History"])
 
 if page == "Company Search":
     st.title("Company Research Tool")
-    st.write("Enter company URLs to analyze and extract information.")
-
     urls = [st.text_input(f"Company {i+1} URL:") for i in range(5)]
 
     if st.button("Process Companies"):
         valid_urls = [u.strip() for u in urls if u.strip()]
-    if not valid_urls:
-        st.error("Please enter at least one valid company URL.")
-    else:
-        results = [process_company(url) for url in valid_urls]
-        df = pd.DataFrame(results)
-        # Evitar ArrowInvalid convirtiendo dicts/lists a strings
-        for col in df.columns:
-            df[col] = df[col].apply(lambda v: json.dumps(v, ensure_ascii=False) if isinstance(v, (dict,list)) else v)
-        st.dataframe(df)
+        if not valid_urls:
+            st.error("Please enter at least one valid company URL.")
+        else:
+            results = [process_company(url) for url in valid_urls]
+            df = pd.DataFrame(results)
 
-        # Asegura que existan las columnas de fundamentals
-        for col in ["market_cap", "current_price", "year_change_pct"]:
-            if col not in df.columns:
-                df[col] = None
+            # Normalizar estructuras complejas
+            for col in df.columns:
+                df[col] = df[col].apply(lambda v: json.dumps(v, ensure_ascii=False)
+                                        if isinstance(v, (dict, list)) else v)
 
-# Dentro de `if st.button("Process Companies"):` y justo después de:
-st.subheader("Fundamentals Económicos")
-st.dataframe(df[["name", "market_cap", "current_price", "year_change_pct"]])
+            st.dataframe(df)
 
-# —————— Gráfico de precio + medias móviles ——————
-if "ticker" in df.columns and df["ticker"].notna().any():
-    selected_ticker = st.selectbox(
-        "Selecciona ticker para gráfico",
-        df["ticker"].dropna().unique()
-    )
-    hist = yf.Ticker(selected_ticker).history(period="1y")
-    hist["MA50"] = hist["Close"].rolling(50).mean()
-    hist["MA200"] = hist["Close"].rolling(200).mean()
+            # Fundamentals Económicos
+            for col in ["market_cap", "current_price", "year_change_pct"]:
+                if col not in df.columns:
+                    df[col] = None
 
-    st.subheader(f"Evolución Precio y Medias Móviles — {selected_ticker}")
-    import matplotlib.pyplot as plt
-    fig, ax = plt.subplots()
-    ax.plot(hist.index, hist["Close"], label="Precio cierre")
-    ax.plot(hist.index, hist["MA50"], label="MA50")
-    ax.plot(hist.index, hist["MA200"], label="MA200")
-    ax.set_xlabel("Fecha")
-    ax.set_ylabel("Precio (USD)")
-    ax.legend()
-    st.pyplot(fig)
+            st.subheader("Fundamentals Económicos")
+            st.dataframe(df[["name","market_cap","current_price","year_change_pct"]])
 
-    csv_data = hist.to_csv()
-    st.download_button(
-        "Descargar datos históricos (CSV)",
-        csv_data,
-        file_name=f"{selected_ticker}_1y_history.csv",
-        mime="text/csv"
-    )
+            # Gráfico con medias móviles
+            if "ticker" in df.columns and df["ticker"].notna().any():
+                selected_ticker = st.selectbox("Selecciona ticker para gráfico", df["ticker"].dropna().unique())
+                hist = yf.Ticker(selected_ticker).history(period="1y")
+                hist["MA50"] = hist["Close"].rolling(50).mean()
+                hist["MA200"] = hist["Close"].rolling(200).mean()
+
+                st.subheader(f"Evolución Precio y Medias Móviles — {selected_ticker}")
+                import matplotlib.pyplot as plt
+                fig, ax = plt.subplots()
+                ax.plot(hist.index, hist["Close"], label="Precio cierre")
+                ax.plot(hist.index, hist["MA50"], label="MA50")
+                ax.plot(hist.index, hist["MA200"], label="MA200")
+                ax.set_xlabel("Fecha")
+                ax.set_ylabel("Precio (USD)")
+                ax.legend()
+                st.pyplot(fig)
+
+                csv_data = hist.to_csv()
+                st.download_button("Descargar datos históricos (CSV)", csv_data, file_name=f"{selected_ticker}_history.csv", mime="text/csv")
+
+            df.to_csv("companies_info.csv", index=False, sep=";")
+            st.download_button("Download CSV", df.to_csv(index=False, sep=";"), file_name="companies_info.csv", mime="text/csv")
+
 
 elif page == "Search History":
     st.title("Search History")
