@@ -233,7 +233,7 @@ st.sidebar.markdown(
 lang = st.sidebar.selectbox("Idioma de salida", ["Original", "Español"])
 
 st.sidebar.title("Navigation")
-##page = st.sidebar.radio("Go to:", ["Company Search", "Search History"])
+page = st.sidebar.radio("Go to:", ["Company Search"])
 
 st.sidebar.markdown("""
 ## Descripción de la App
