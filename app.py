@@ -1,4 +1,3 @@
-from fallback_tickers import FALLBACK_TICKERS
 import subprocess
 import sqlite3
 import streamlit as st
@@ -378,3 +377,131 @@ if page == "Company Search":
             file_name="companies_info.csv",
             mime="text/csv"
         )
+
+FALLBACK_TICKERS = {
+    # Formato:
+    # "dominio_principal_de_la_empresa": "TICKER_BURSÁTIL"
+
+    # -----------------------------------------------------
+    # ------------------- Ejemplos de Empresas ------------
+    # -----------------------------------------------------
+
+    # Tecnología
+    "apple.com": "AAPL",
+    "microsoft.com": "MSFT",
+    "google.com": "GOOGL",   # google.com => GOOGL
+    "alphabet.com": "GOOG",  # a veces la web es alphabet.com
+    "amazon.com": "AMZN",
+    "tesla.com": "TSLA",
+    "meta.com": "META",
+    "ibm.com": "IBM",
+    "intel.com": "INTC",
+    "amd.com": "AMD",
+    "nvidia.com": "NVDA",
+    "salesforce.com": "CRM",
+    "adobe.com": "ADBE",
+    "oracle.com": "ORCL",
+    "paypal.com": "PYPL",
+    "zoom.us": "ZM",
+    "netflix.com": "NFLX",
+    "hp.com": "HPQ",
+    "cisco.com": "CSCO",
+
+    # Finanzas/Bancos
+    "jpmorganchase.com": "JPM",
+    "chase.com": "JPM",
+    "goldmansachs.com": "GS",
+    "bankofamerica.com": "BAC",
+    "bofa.com": "BAC",
+    "citigroup.com": "C",
+    "wellsfargo.com": "WFC",
+    "hsbc.com": "HSBC",
+    "barclays.co.uk": "BCS",
+
+    # Consumo/Alimentación
+    "coca-colacompany.com": "KO",
+    "pepsico.com": "PEP",
+    "nestle.com": "NSRGY",  # ADR
+    "unilever.com": "UL",
+    "kraftheinzcompany.com": "KHC",
+    "mondelezinternational.com": "MDLZ",
+    "danone.com": "DANOY",   # ADR
+    "tyson.com": "TSN",
+
+    # Automotriz
+    "toyota.com": "TM",
+    "ford.com": "F",
+    "gm.com": "GM",
+    "volkswagen.com": "VWAGY", # ADR
+    "honda.com": "HMC",
+    "bmw.com": "BMWYY",
+    "mercedes-benz.com": "MBGYY",
+
+    # Energía/Petróleo
+    "exxonmobil.com": "XOM",
+    "chevron.com": "CVX",
+    "shell.com": "SHEL",
+    "bp.com": "BP",
+    "totalenergies.com": "TTE",
+
+    # Retail
+    "walmart.com": "WMT",
+    "costco.com": "COST",
+    "homedepot.com": "HD",
+    "lowes.com": "LOW",
+    "target.com": "TGT",
+    "bestbuy.com": "BBY",
+    "nike.com": "NKE",
+    "adidas.com": "ADDYY",  # ADR
+    "zalando.com": "ZLNDY", # ADR
+
+    # Farmacéuticas/Salud
+    "pfizer.com": "PFE",
+    "johnsonandjohnson.com": "JNJ",
+    "moderna.com": "MRNA",
+    "astrazeneca.com": "AZN",
+    "novartis.com": "NVS",
+    "merck.com": "MRK",
+    "bayer.com": "BAYRY",
+    "sanofi.com": "SNY",
+
+    # Aeroespacial/Defensa
+    "boeing.com": "BA",
+    "lockheedmartin.com": "LMT",
+    "raytheon.com": "RTX",
+    "airbus.com": "EADSY",
+    "northropgrumman.com": "NOC",
+
+    # Telecomunicaciones
+    "verizon.com": "VZ",
+    "att.com": "T",
+    "vodafone.com": "VOD",
+    "telefonica.com": "TEF",
+
+    # Transporte/Logística
+    "ups.com": "UPS",
+    "fedex.com": "FDX",
+    "dhl.com": "DPSTF",
+    "maersk.com": "AMKBY",
+
+    # Bienes Raíces/Constructora
+    "cbreglobal.com": "CBRE",
+    "realogy.com": "HOUS",
+    "lennar.com": "LEN",
+    "drhorton.com": "DHI",
+    "pultegroup.com": "PHM",
+
+    # Diversas/OTRAS
+    "berkshirehathaway.com": "BRK-B",
+    "didi.com": "DIDIY",
+    "alibaba.com": "BABA",
+    "jd.com": "JD",
+    "baidu.com": "BIDU",
+    "united.com": "UAL",   # United Airlines
+    "southwest.com": "LUV",
+    "marriott.com": "MAR",
+    "booking.com": "BKNG",
+    "accenture.com": "ACN",
+    "3m.com": "MMM",
+    "ecopetrol.com.co": "EC"
+}
