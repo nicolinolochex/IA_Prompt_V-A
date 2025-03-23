@@ -11,6 +11,8 @@ from dotenv import load_dotenv
 import yfinance as yf
 import urllib.parse
 import tldextract
+from fallback_tickers import FALLBACK_TICKERS
+
 
 
 
@@ -161,11 +163,6 @@ def lookup_ticker_by_name(name: str) -> str | None:
         return None
 
 
-FALLBACK_TICKERS = {
-    "coca-colacompany.com": "KO",
-    # Agrega otros dominios que quieras forzar
-}
-
 def process_company(company_url):
     st.info(f"Processing company: {company_url}")
     website_text, website_soup = scrape_web_content(company_url)
@@ -207,7 +204,6 @@ def process_company(company_url):
     if not ticker:
         domain_parts = tldextract.extract(company_url)
         domain = f"{domain_parts.domain}.{domain_parts.suffix}"
-        st.write(f"Domain fallback => {domain}")
         fallback = FALLBACK_TICKERS.get(domain)
         if fallback:
             ticker = fallback
