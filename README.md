@@ -1,7 +1,14 @@
 # Evaluador Automatizado de Empresas Según Requerimientos (E3)
 
 ## Acceso a la Aplicación Web
-[Prueba la aplicación en Streamlit](https://iapromptv-a-2eqe8j67tnkvat972ihnmy.streamlit.app/)
+[Prueba la aplicación en Streamlit](https://iapromptv-a-zwb2njyedpj9rrsspqtj43.streamlit.app/)
+
+> **🧪 Prueba rápida:** Para verificar todas las funcionalidades nuevas, ingresá la URL de Apple (https://www.apple.com/) en el campo de búsqueda.  
+> 
+> 🚀 **Nuevos cambios implementados:**  
+> - Selector de idioma (Original ↔ Español) para toda la salida.  
+> - Indicadores financieros clave extraídos automáticamente (capitalización de mercado, precio actual, variación anual, P/E, EPS, dividend yield, máximos/mínimos de 52 semanas y volumen promedio).  
+> - Gráfico interactivo de la evolución del precio de la acción en el último año, con medias móviles de 50 y 200 días, descargable en CSV.  
 
 ## Descripción del Proyecto
 
