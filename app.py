@@ -10,6 +10,7 @@ import os
 from dotenv import load_dotenv
 import yfinance as yf
 import urllib.parse
+import tldextract
 
 
 
@@ -136,6 +137,23 @@ def fetch_financials(ticker):
         }
     except Exception:
         return {}
+    
+def fetch_financials(ticker):
+    try:
+        info = yf.Ticker(ticker).info
+        return {
+            "market_cap": info.get("marketCap"),
+            "current_price": info.get("currentPrice"),
+            "year_change_pct": info.get("52WeekChange"),
+            "pe_ratio": info.get("trailingPE"),
+            "eps": info.get("trailingEps"),
+            "dividend_yield": info.get("dividendYield"),
+            "52_week_high": info.get("fiftyTwoWeekHigh"),
+            "52_week_low": info.get("fiftyTwoWeekLow"),
+            "avg_volume": info.get("averageVolume")
+        }
+    except Exception:
+        return {}
 
 def lookup_ticker_by_name(name: str) -> str | None:
     query = urllib.parse.quote(name)
@@ -148,17 +166,33 @@ def lookup_ticker_by_name(name: str) -> str | None:
         return None
 
 
+def lookup_ticker_by_name(name: str) -> str | None:
+    query = urllib.parse.quote(name)
+    url = f"https://query1.finance.yahoo.com/v1/finance/search?q={query}"
+    try:
+        resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=5)
+        quotes = resp.json().get("quotes", [])
+        return quotes[0].get("symbol") if quotes else None
+    except Exception:
+        return None
+
+
+FALLBACK_TICKERS = {
+    "coca-colacompany.com": "KO",
+    # Agrega otros dominios que quieras forzar
+}
+
 def process_company(company_url):
-    """Processes a single company URL, extracting website and LinkedIn data."""
     st.info(f"Processing company: {company_url}")
     website_text, website_soup = scrape_web_content(company_url)
     if not website_text:
         return {}
 
-    # Extracción y parseo seguro de la info desde el sitio web
+    # Extraer info GPT
     website_raw = extract_company_info(website_text, company_url, source="website")
     website_info = safe_parse(website_raw)
 
+    # LinkedIn
     linkedin_url = find_linkedin_url(website_soup)
     linkedin_info = {}
     if linkedin_url:
@@ -167,18 +201,38 @@ def process_company(company_url):
             linkedin_raw = extract_company_info(linkedin_text, company_url, source="LinkedIn")
             linkedin_info = safe_parse(linkedin_raw)
 
+    # Combinar
     final_info = {**website_info, **linkedin_info, "linkedin_url": linkedin_url}
 
+    # 1) Ticker desde GPT
     ticker = final_info.get("ticker")
-    if not ticker:
-        ticker = lookup_ticker_by_name(final_info.get("name", ""))
-        final_info["ticker"] = ticker
 
+    # 2) Si GPT no lo dio, buscar en Yahoo Finance con el nombre
+    if not ticker:
+        name_for_lookup = final_info.get("name", "")
+        ticker_from_yahoo = lookup_ticker_by_name(name_for_lookup)
+        if ticker_from_yahoo:
+            ticker = ticker_from_yahoo
+            final_info["ticker"] = ticker
+
+    # 3) Si ni GPT ni lookup lo dieron, fallback manual por dominio
+    if not ticker:
+        domain_parts = tldextract.extract(company_url)
+        domain = f"{domain_parts.domain}.{domain_parts.suffix}"
+        # e.g. domain = "coca-colacompany.com"
+        fallback = FALLBACK_TICKERS.get(domain)
+        if fallback:
+            ticker = fallback
+            final_info["ticker"] = ticker
+
+    # 4) Si al final tenemos ticker, trae datos financieros
     if ticker:
         final_info.update(fetch_financials(ticker))
 
+    # Guardar en DB
     save_search_to_db(company_url, linkedin_url, final_info)
     return final_info
+
 
 
 def save_search_to_db(company_url, linkedin_url, data):
