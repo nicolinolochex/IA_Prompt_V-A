@@ -295,6 +295,34 @@ if st.button("Process Companies"):
 
         st.subheader("Fundamentals Económicos")
         st.dataframe(df[["name", "market_cap", "current_price", "year_change_pct"]])
+        # —————— Gráfico de precio + medias móviles ——————
+        if "ticker" in df.columns and not df["ticker"].dropna().empty:
+            selected_ticker = st.selectbox(
+                "Selecciona ticker para gráfico",
+                df["ticker"].dropna().unique()
+            )
+            hist = yf.Ticker(selected_ticker).history(period="1y")
+            hist["MA50"] = hist["Close"].rolling(50).mean()
+            hist["MA200"] = hist["Close"].rolling(200).mean()
+
+            st.subheader(f"Evolución Precio y Medias Móviles — {selected_ticker}")
+            import matplotlib.pyplot as plt
+            fig, ax = plt.subplots()
+            ax.plot(hist.index, hist["Close"], label="Precio cierre")
+            ax.plot(hist.index, hist["MA50"], label="MA50")
+            ax.plot(hist.index, hist["MA200"], label="MA200")
+            ax.set_xlabel("Fecha")
+            ax.set_ylabel("Precio (USD)")
+            ax.legend()
+            st.pyplot(fig)
+
+            csv_data = hist.to_csv()
+            st.download_button(
+                "Descargar datos históricos (CSV)",
+                csv_data,
+                file_name=f"{selected_ticker}_1y_history.csv",
+                mime="text/csv"
+            )
 
         df.to_csv("companies_info.csv", index=False, sep=";")
         st.download_button(
