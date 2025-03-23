@@ -9,6 +9,8 @@ import pandas as pd
 import os
 from dotenv import load_dotenv
 import yfinance as yf
+import urllib.parse
+
 
 
 # Load environment variables
@@ -135,6 +137,15 @@ def fetch_financials(ticker):
     except Exception:
         return {}
 
+def lookup_ticker_by_name(name: str) -> str | None:
+    query = urllib.parse.quote(name)
+    url = f"https://query1.finance.yahoo.com/v1/finance/search?q={query}"
+    try:
+        resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=5)
+        quotes = resp.json().get("quotes", [])
+        return quotes[0].get("symbol") if quotes else None
+    except Exception:
+        return None
 
 
 def process_company(company_url):
@@ -157,13 +168,17 @@ def process_company(company_url):
             linkedin_info = safe_parse(linkedin_raw)
 
     final_info = {**website_info, **linkedin_info, "linkedin_url": linkedin_url}
+
     ticker = final_info.get("ticker")
+    if not ticker:
+        ticker = lookup_ticker_by_name(final_info.get("name", ""))
+        final_info["ticker"] = ticker
+
     if ticker:
         final_info.update(fetch_financials(ticker))
 
     save_search_to_db(company_url, linkedin_url, final_info)
     return final_info
-
 
 
 def save_search_to_db(company_url, linkedin_url, data):
