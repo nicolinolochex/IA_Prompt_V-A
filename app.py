@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
 
 # Estimated token cost for GPT-4
 COST_PER_1K_TOKENS = 0.03
@@ -102,27 +102,35 @@ def extract_company_info(content, website_url, source="website"):
         st.error(f"Error during GPT-4 extraction: {e}")
         return None
 
+def safe_parse(raw):
+    try:
+        return json.loads(raw)
+    except (TypeError, json.JSONDecodeError):
+        return {}
+
 def process_company(company_url):
     """Processes a single company URL, extracting website and LinkedIn data."""
     st.info(f"Processing company: {company_url}")
     website_text, website_soup = scrape_web_content(company_url)
     if not website_text:
         return {}
-    
-    website_info = extract_company_info(website_text, company_url, source="website")
-    website_info = json.loads(website_info) if website_info else {}
-    
+
+    # Extracción y parseo seguro de la info desde el sitio web
+    website_raw = extract_company_info(website_text, company_url, source="website")
+    website_info = safe_parse(website_raw)
+
     linkedin_url = find_linkedin_url(website_soup)
     linkedin_info = {}
     if linkedin_url:
         linkedin_text, _ = scrape_web_content(linkedin_url)
         if linkedin_text:
-            linkedin_info = extract_company_info(linkedin_text, company_url, source="LinkedIn")
-            linkedin_info = json.loads(linkedin_info) if linkedin_info else {}
-    
+            linkedin_raw = extract_company_info(linkedin_text, company_url, source="LinkedIn")
+            linkedin_info = safe_parse(linkedin_raw)
+
     final_info = {**website_info, **linkedin_info, "linkedin_url": linkedin_url}
     save_search_to_db(company_url, linkedin_url, final_info)
     return final_info
+
 
 def save_search_to_db(company_url, linkedin_url, data):
     conn = sqlite3.connect("history.db")
