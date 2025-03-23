@@ -74,38 +74,43 @@ def find_linkedin_url(soup):
     return None
 
 def extract_company_info(content, website_url, source="website"):
-    """Extracts company information using GPT-4."""
     if not content or len(content) < 50:
         st.warning("Insufficient content extracted for GPT analysis.")
         return None
-    
-    language_clause = "" if lang == "Original" else " Return all output in Spanish."
 
-    prompt = f"""
-    Extract and summarize the following company information from the provided {source} content.
-    Return a valid JSON with these keys: "name", "website", "ownership", "country", "brief_description", "services", "headcount", "revenue".{language_clause}
-    Content:
-    {content[:4000]}  # Limit content size
-    """
+    # Construir prompt según idioma
+    if lang == "Español":
+        system_msg = "Eres un asistente experto en valoración y adquisición de empresas. Genera resultados en Español."
+        prompt = f"""
+        Extrae y resume la siguiente información de la empresa del contenido proporcionado ({source}).
+        Devuelve SOLO un JSON válido con las claves: name, website, ownership, country, brief_description, services, headcount, revenue, ticker.
+        Contenido:
+        {content[:4000]}
+        """
+    else:
+        system_msg = "You are an expert in company valuation and acquisitions. Return output in English."
+        prompt = f"""
+        Extract and summarize the following company information from the provided {source} content.
+        Return ONLY a valid JSON with keys: name, website, ownership, country, brief_description, services, headcount, revenue, ticker.
+        Content:
+        {content[:4000]}
+        """
 
-    
     try:
         response = openai.ChatCompletion.create(
             model="gpt-4",
-            messages=[{"role": "system", "content": "Eres un asistente experto en valoración y adquisición de empresas. Dominas métricas financieras y de negocio (KPIs) como revenue, headcount, crecimiento, rentabilidad, sostenibilidad y posición de mercado. Identificas automáticamente la información más relevante de sitios web y perfiles corporativos, la estructuras en formato JSON limpio y generas insights claros que faciliten decisiones estratégicas de M&A."},
-            {"role": "user", "content": prompt}],
+            messages=[
+                {"role": "system", "content": system_msg},
+                {"role": "user", "content": prompt}
+            ],
             temperature=0.7,
             max_tokens=600
-)
-
-        info = response["choices"][0]["message"]["content"].strip()
-        token_usage = response["usage"]["total_tokens"]
-        cost_estimate = (token_usage / 1000) * COST_PER_1K_TOKENS
-        st.write(f"Estimated GPT-4 cost: ${cost_estimate:.4f}")
-        return info
+        )
+        return response["choices"][0]["message"]["content"].strip()
     except Exception as e:
         st.error(f"Error during GPT-4 extraction: {e}")
         return None
+
 
 def safe_parse(raw):
     try:
