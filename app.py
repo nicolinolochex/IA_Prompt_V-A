@@ -273,7 +273,7 @@ if page == "Company Search":
         st.dataframe(df)
 
         # Fundamentals Económicos
-        for col in ["market_cap", "current_price", "year_change_pct"]:
+        for col in ["name", "market_cap", "current_price", "year_change_pct"]:
             if col not in df.columns:
                 df[col] = None
 
