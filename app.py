@@ -185,11 +185,15 @@ def process_company(company_url):
             linkedin_raw = extract_company_info(linkedin_text, company_url, source="LinkedIn")
             linkedin_info = safe_parse(linkedin_raw)
 
-    # Combinar
     final_info = {**website_info, **linkedin_info, "linkedin_url": linkedin_url}
 
-    # 1) Ticker desde GPT
+    # 1) Tomar ticker desde GPT
     ticker = final_info.get("ticker")
+
+    # 1.b) Si GPT devolvió algo como "Data not provided", limpiarlo a None
+    invalid_tickers = ["Data not provided", "Not provided", "N/A", "", None]
+    if ticker in invalid_tickers:
+        ticker = None
 
     # 2) Si GPT no lo dio, buscar en Yahoo Finance con el nombre
     if not ticker:
@@ -203,7 +207,6 @@ def process_company(company_url):
     if not ticker:
         domain_parts = tldextract.extract(company_url)
         domain = f"{domain_parts.domain}.{domain_parts.suffix}"
-        # e.g. domain = "coca-colacompany.com"
         fallback = FALLBACK_TICKERS.get(domain)
         if fallback:
             ticker = fallback
@@ -216,7 +219,6 @@ def process_company(company_url):
     # Guardar en DB
     save_search_to_db(company_url, linkedin_url, final_info)
     return final_info
-
 
 
 def save_search_to_db(company_url, linkedin_url, data):
