@@ -192,7 +192,7 @@ def process_company(company_url):
 
     # 1.b) Si GPT devolvió algo como "Data not provided", limpiarlo a None
     invalid_tickers = ["Data not provided", "Not provided", "N/A", "", None]
-    if ticker in invalid_tickers:
+    if ticker and ticker.lower() in ["data not provided", "not provided", "n/a", ""]:
         ticker = None
 
     # 2) Si GPT no lo dio, buscar en Yahoo Finance con el nombre
@@ -207,6 +207,7 @@ def process_company(company_url):
     if not ticker:
         domain_parts = tldextract.extract(company_url)
         domain = f"{domain_parts.domain}.{domain_parts.suffix}"
+        st.write(f"Domain fallback => {domain}")
         fallback = FALLBACK_TICKERS.get(domain)
         if fallback:
             ticker = fallback
@@ -214,6 +215,7 @@ def process_company(company_url):
 
     # 4) Si al final tenemos ticker, trae datos financieros
     if ticker:
+        st.write(f"Ticker final => {ticker}")
         final_info.update(fetch_financials(ticker))
 
     # Guardar en DB
