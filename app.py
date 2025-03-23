@@ -87,10 +87,12 @@ def extract_company_info(content, website_url, source="website"):
     try:
         response = openai.ChatCompletion.create(
             model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
+            messages=[{"role": "system", "content": "Eres un asistente experto en valoración y adquisición de empresas. Dominas métricas financieras y de negocio (KPIs) como revenue, headcount, crecimiento, rentabilidad, sostenibilidad y posición de mercado. Identificas automáticamente la información más relevante de sitios web y perfiles corporativos, la estructuras en formato JSON limpio y generas insights claros que faciliten decisiones estratégicas de M&A."},
+            {"role": "user", "content": prompt}],
             temperature=0.7,
             max_tokens=600
-        )
+)
+
         info = response["choices"][0]["message"]["content"].strip()
         token_usage = response["usage"]["total_tokens"]
         cost_estimate = (token_usage / 1000) * COST_PER_1K_TOKENS
