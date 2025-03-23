@@ -201,6 +201,7 @@ def process_company(company_url):
             final_info["ticker"] = ticker
 
     # 3) Si ni GPT ni lookup lo dieron, fallback manual por dominio
+# 3) Si ni GPT ni lookup lo dieron, fallback manual por dominio
     if not ticker:
         domain_parts = tldextract.extract(company_url)
         domain = f"{domain_parts.domain}.{domain_parts.suffix}"
@@ -208,6 +209,7 @@ def process_company(company_url):
         if fallback:
             ticker = fallback
             final_info["ticker"] = ticker
+
 
     # 4) Si al final tenemos ticker, trae datos financieros
     if ticker:
