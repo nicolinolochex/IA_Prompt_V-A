@@ -197,6 +197,19 @@ st.sidebar.markdown(
     unsafe_allow_html=True
 )
 
+st.sidebar.markdown("""
+## Descripción de la App
+
+Esta herramienta automatiza el **research de empresas** para adquisiciones, reduciendo horas de trabajo manual.
+
+➡️ **Cómo funciona:**  
+1. Ingresás URLs de sitios corporativos o perfiles de LinkedIn.  
+2. El sistema extrae datos clave (headcount, revenue, servicios, país, sostenibilidad) mediante web scraping.  
+3. GPT‑4 procesa esa información, genera un resumen estructurado y asigna un puntaje según tus criterios predefinidos.
+
+🎯 **Objetivo:**  
+Acelerar la obtención de insights confiables, mejorar la precisión de los datos y facilitar decisiones estratégicas de M&A.
+""", unsafe_allow_html=True)
 
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to:", ["Company Search", "Search History"])
