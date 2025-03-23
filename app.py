@@ -146,7 +146,9 @@ def process_company(company_url):
 
     # Extracción y parseo seguro de la info desde el sitio web
     website_raw = extract_company_info(website_text, company_url, source="website")
+    st.write(f"🔍 RAW JSON for {company_url} (website):", website_raw)
     website_info = safe_parse(website_raw)
+    st.write(f"✅ Parsed dict for {company_url} (website):", website_info)
 
     linkedin_url = find_linkedin_url(website_soup)
     linkedin_info = {}
