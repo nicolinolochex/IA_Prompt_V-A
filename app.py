@@ -125,20 +125,37 @@ def process_company(company_url):
     return final_info
 
 def save_search_to_db(company_url, linkedin_url, data):
-    """Saves the search result to the database."""
     conn = sqlite3.connect("history.db")
     cursor = conn.cursor()
-    cursor.execute("""
-    INSERT INTO searches (company_url, linkedin_url, name, website, ownership, country, brief_description, services, headcount, revenue)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-        company_url, linkedin_url,
-        data.get("name"), data.get("website"), data.get("ownership"),
-        data.get("country"), data.get("brief_description"),
-        data.get("services"), data.get("headcount"), data.get("revenue")
-    ))
-    conn.commit()
-    conn.close()
+    try:
+        params = (
+            company_url,
+            linkedin_url,
+            str(data.get("name", "")),
+            str(data.get("website", "")),
+            str(data.get("ownership", "")),
+            str(data.get("country", "")),
+            str(data.get("brief_description", "")),
+            str(data.get("services", "")),
+            str(data.get("headcount", "")),
+            str(data.get("revenue", ""))
+        )
+        cursor.execute(
+            """
+            INSERT INTO searches (
+                company_url, linkedin_url, name, website, ownership,
+                country, brief_description, services, headcount, revenue
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            params
+        )
+        conn.commit()
+    except sqlite3.ProgrammingError as e:
+        st.error(f"Database insert error: {e}")
+        import logging; logging.exception("DB insert failed")
+    finally:
+        conn.close()
+
 
 # ---------------------- Streamlit UI ----------------------
 # URL de la foto de perfil de LinkedIn
