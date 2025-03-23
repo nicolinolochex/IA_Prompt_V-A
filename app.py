@@ -83,7 +83,7 @@ def extract_company_info(content, website_url, source="website"):
 
     prompt = f"""
     Extract and summarize the following company information from the provided {source} content.
-    Return a valid JSON with these keys: "name", "website", "ownership", "country", "brief_description", "services", "headcount", "revenue".
+    Return a valid JSON with these keys: "name", "website", "ownership", "country", "brief_description", "services", "headcount", "revenue", "ticker".
     Content:
     {content[:4000]}  # Limit content size
     """
