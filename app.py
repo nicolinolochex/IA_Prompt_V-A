@@ -1,3 +1,4 @@
+from fallback_tickers import FALLBACK_TICKERS
 import subprocess
 import sqlite3
 import streamlit as st
@@ -11,7 +12,7 @@ from dotenv import load_dotenv
 import yfinance as yf
 import urllib.parse
 import tldextract
-from fallback_tickers import FALLBACK_TICKERS
+
 
 
 
