@@ -8,6 +8,8 @@ import json
 import pandas as pd
 import os
 from dotenv import load_dotenv
+import yfinance as yf
+
 
 # Load environment variables
 load_dotenv()
@@ -77,6 +79,8 @@ def extract_company_info(content, website_url, source="website"):
         st.warning("Insufficient content extracted for GPT analysis.")
         return None
     
+    language_clause = "" if lang == "Original" else " Return all output in Spanish."
+
     prompt = f"""
     Extract and summarize the following company information from the provided {source} content.
     Return a valid JSON with these keys: "name", "website", "ownership", "country", "brief_description", "services", "headcount", "revenue".
@@ -108,6 +112,17 @@ def safe_parse(raw):
     except (TypeError, json.JSONDecodeError):
         return {}
 
+def fetch_financials(ticker):
+    try:
+        info = yf.Ticker(ticker).info
+        return {
+            "market_cap": info.get("marketCap"),
+            "current_price": info.get("currentPrice"),
+            "year_change_pct": info.get("52WeekChange")
+        }
+    except Exception:
+        return {}
+
 def process_company(company_url):
     """Processes a single company URL, extracting website and LinkedIn data."""
     st.info(f"Processing company: {company_url}")
@@ -128,6 +143,10 @@ def process_company(company_url):
             linkedin_info = safe_parse(linkedin_raw)
 
     final_info = {**website_info, **linkedin_info, "linkedin_url": linkedin_url}
+    ticker = final_info.get("ticker")
+if ticker:
+    final_info.update(fetch_financials(ticker))
+
     save_search_to_db(company_url, linkedin_url, final_info)
     return final_info
 
@@ -210,6 +229,8 @@ Esta herramienta automatiza el **research de empresas** para adquisiciones, redu
 Acelerar la obtención de insights confiables, mejorar la precisión de los datos y facilitar decisiones estratégicas.
 """, unsafe_allow_html=True)
 
+lang = st.sidebar.selectbox("Idioma de salida", ["Original", "Español"])
+
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to:", ["Company Search", "Search History"])
 
@@ -227,6 +248,8 @@ if page == "Company Search":
             results = [process_company(url) for url in valid_urls]
             df = pd.DataFrame(results)
             st.dataframe(df)
+            st.subheader("Fundamentals Económicos")
+            st.dataframe(df[["name", "market_cap", "current_price", "year_change_pct"]])
             df.to_csv("companies_info.csv", index=False, sep=";")
             st.download_button("Download CSV", df.to_csv(index=False, sep=";"), file_name="companies_info.csv", mime="text/csv")
 
@@ -245,3 +268,4 @@ elif page == "Search History":
 
     if st.button("Back to Search"):
         st.experimental_set_query_params(page="Company Search") 
+
