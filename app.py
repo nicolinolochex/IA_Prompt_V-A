@@ -241,7 +241,7 @@ if page == "Company Search":
 
     urls = [st.text_input(f"Company {i+1} URL:") for i in range(5)]
 
-    if st.button("Process Companies"):
+if st.button("Process Companies"):
     valid_urls = [u.strip() for u in urls if u.strip()]
     if not valid_urls:
         st.error("Please enter at least one valid company URL.")
@@ -250,7 +250,7 @@ if page == "Company Search":
         df = pd.DataFrame(results)
         st.dataframe(df)
 
-        # ← Inserta este fragmento aquí
+        # Asegura que existan las columnas de fundamentals
         for col in ["market_cap", "current_price", "year_change_pct"]:
             if col not in df.columns:
                 df[col] = None
@@ -259,7 +259,13 @@ if page == "Company Search":
         st.dataframe(df[["name", "market_cap", "current_price", "year_change_pct"]])
 
         df.to_csv("companies_info.csv", index=False, sep=";")
-        st.download_button("Download CSV", df.to_csv(index=False, sep=";"), file_name="companies_info.csv", mime="text/csv")
+        st.download_button(
+            "Download CSV",
+            df.to_csv(index=False, sep=";"),
+            file_name="companies_info.csv",
+            mime="text/csv"
+        )
+
 
 
 elif page == "Search History":
