@@ -280,47 +280,46 @@ if page == "Company Search":
         st.subheader("Fundamentals Económicos")
         st.dataframe(df[["name","market_cap","current_price","year_change_pct"]])
 
-        # Gráfico con medias móviles (persistente)
+         # Gráfico con medias móviles (persistente)
         if "ticker" in df.columns and df["ticker"].notna().any():
-            selected_ticker = st.selectbox("Selecciona ticker para gráfico", df["ticker"].dropna().unique())
-            hist = yf.Ticker(selected_ticker).history(period="1y")
-            hist["MA50"] = hist["Close"].rolling(50).mean()
-            hist["MA200"] = hist["Close"].rolling(200).mean()
+            selected_ticker = st.selectbox(
+                "Selecciona ticker para gráfico",
+                df["ticker"].dropna().unique()
+            )
 
-            st.subheader(f"Evolución Precio y Medias Móviles — {selected_ticker}")
-            import matplotlib.pyplot as plt
-            fig, ax = plt.subplots()
-            ax.plot(hist.index, hist["Close"], label="Precio cierre")
-            ax.plot(hist.index, hist["MA50"], label="MA50")
-            ax.plot(hist.index, hist["MA200"], label="MA200")
-            ax.set_xlabel("Fecha")
-            ax.set_ylabel("Precio (USD)")
-            ax.legend()
-            st.pyplot(fig)
+            try:
+                hist = yf.Ticker(selected_ticker).history(period="1y")
+                if hist.empty:
+                    raise ValueError("No hay datos históricos disponibles")
 
-            csv_data = hist.to_csv()
-            st.download_button("Descargar datos históricos (CSV)", csv_data,
-                                file_name=f"{selected_ticker}_history.csv", mime="text/csv")
+                hist["MA50"] = hist["Close"].rolling(50).mean()
+                hist["MA200"] = hist["Close"].rolling(200).mean()
+
+                st.subheader(f"Evolución Precio y Medias Móviles — {selected_ticker}")
+                import matplotlib.pyplot as plt
+                fig, ax = plt.subplots()
+                ax.plot(hist.index, hist["Close"], label="Precio cierre")
+                ax.plot(hist.index, hist["MA50"], label="MA50")
+                ax.plot(hist.index, hist["MA200"], label="MA200")
+                ax.set_xlabel("Fecha")
+                ax.set_ylabel("Precio (USD)")
+                ax.legend()
+                st.pyplot(fig)
+
+                csv_data = hist.to_csv()
+                st.download_button(
+                    "Descargar datos históricos (CSV)",
+                    csv_data,
+                    file_name=f"{selected_ticker}_history.csv",
+                    mime="text/csv"
+                )
+            except Exception as e:
+                st.error(f"No se pudieron obtener datos históricos para {selected_ticker}: {e}")
 
         df.to_csv("companies_info.csv", index=False, sep=";")
-        st.download_button("Download CSV", df.to_csv(index=False, sep=";"),
-                            file_name="companies_info.csv", mime="text/csv")
-
-
-
-elif page == "Search History":
-    st.title("Search History")
-
-    conn = sqlite3.connect("history.db")
-    df_history = pd.read_sql("SELECT * FROM searches ORDER BY date DESC", conn)
-    conn.close()
-
-    search_filter = st.text_input("Filter by company name:")
-    if search_filter:
-        df_history = df_history[df_history["name"].str.contains(search_filter, case=False, na=False)]
-
-    st.dataframe(df_history)
-
-    if st.button("Back to Search"):
-        st.experimental_set_query_params(page="Company Search") 
-
+        st.download_button(
+            "Download CSV",
+            df.to_csv(index=False, sep=";"),
+            file_name="companies_info.csv",
+            mime="text/csv"
+        )
