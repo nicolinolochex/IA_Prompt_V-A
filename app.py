@@ -138,22 +138,6 @@ def fetch_financials(ticker):
     except Exception:
         return {}
     
-def fetch_financials(ticker):
-    try:
-        info = yf.Ticker(ticker).info
-        return {
-            "market_cap": info.get("marketCap"),
-            "current_price": info.get("currentPrice"),
-            "year_change_pct": info.get("52WeekChange"),
-            "pe_ratio": info.get("trailingPE"),
-            "eps": info.get("trailingEps"),
-            "dividend_yield": info.get("dividendYield"),
-            "52_week_high": info.get("fiftyTwoWeekHigh"),
-            "52_week_low": info.get("fiftyTwoWeekLow"),
-            "avg_volume": info.get("averageVolume")
-        }
-    except Exception:
-        return {}
 
 def lookup_ticker_by_name(name: str) -> str | None:
     query = urllib.parse.quote(name)
