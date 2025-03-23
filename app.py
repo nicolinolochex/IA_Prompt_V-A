@@ -124,10 +124,42 @@ def fetch_financials(ticker):
         return {
             "market_cap": info.get("marketCap"),
             "current_price": info.get("currentPrice"),
-            "year_change_pct": info.get("52WeekChange")
+            "year_change_pct": info.get("52WeekChange"),
+            "pe_ratio": info.get("trailingPE"),
+            "eps": info.get("trailingEps"),
+            "dividend_yield": info.get("dividendYield"),
+            "52_week_high": info.get("fiftyTwoWeekHigh"),
+            "52_week_low": info.get("fiftyTwoWeekLow"),
+            "avg_volume": info.get("averageVolume")
         }
     except Exception:
         return {}
+    
+if ticker:
+    hist = yf.Ticker(ticker).history(period="1y")
+    hist["MA50"] = hist["Close"].rolling(50).mean()
+    hist["MA200"] = hist["Close"].rolling(200).mean()
+
+    st.subheader("Evolución Precio (último año) y Medias Móviles")
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots()
+    ax.plot(hist.index, hist["Close"], label="Precio cierre")
+    ax.plot(hist.index, hist["MA50"], label="MA50")
+    ax.plot(hist.index, hist["MA200"], label="MA200")
+    ax.set_xlabel("Fecha")
+    ax.set_ylabel("Precio (USD)")
+    ax.legend()
+    st.pyplot(fig)
+
+    csv_data = hist.to_csv()
+    st.download_button(
+        "Descargar datos históricos (CSV)",
+        csv_data,
+        file_name=f"{ticker}_1y_history.csv",
+        mime="text/csv"
+    )
+
 
 def process_company(company_url):
     """Processes a single company URL, extracting website and LinkedIn data."""
