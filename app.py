@@ -262,6 +262,9 @@ if page == "Company Search":
     else:
         results = [process_company(url) for url in valid_urls]
         df = pd.DataFrame(results)
+        # Evitar ArrowInvalid convirtiendo dicts/lists a strings
+        for col in df.columns:
+            df[col] = df[col].apply(lambda v: json.dumps(v, ensure_ascii=False) if isinstance(v, (dict,list)) else v)
         st.dataframe(df)
 
         # Asegura que existan las columnas de fundamentals
